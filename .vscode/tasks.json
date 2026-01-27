@@ -2,16 +2,18 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Launch Backend (Browser)",
+      "label": "Setup Backend (DB & Migrations)",
       "type": "shell",
       "windows": {
-        "command": "powershell -Command \"Start-Process 'http://localhost/FlashPay/api/test.php'; Write-Host 'Backend verificado.'; Read-Host 'Presiona Enter para cerrar...'\""
+        "command": "php api/setup.php"
       },
       "presentation": {
         "reveal": "always",
-        "panel": "new",
+        "panel": "shared",
         "group": "build"
-      }
+      },
+      "problemMatcher": [],
+      "detail": "Crea BD, Tablas y Datos automáticamente."
     },
     {
       "label": "Launch Frontend (Expo)",
@@ -21,13 +23,16 @@
       },
       "presentation": {
         "reveal": "always",
-        "panel": "new",
+        "panel": "shared",
         "group": "build"
       }
     },
     {
       "label": "Run FlashPay Project",
-      "dependsOn": ["Launch Backend (Browser)", "Launch Frontend (Expo)"],
+      "dependsOn": [
+        "Setup Backend (DB & Migrations)",
+        "Launch Frontend (Expo)"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
