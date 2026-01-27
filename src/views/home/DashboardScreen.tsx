@@ -13,7 +13,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
-
+import { getAvatarColor, getInitials } from "../../utils/avatarUtils";
 import { Skeleton } from "../../components/common/Skeleton";
 import { hapticFeedback } from "../../utils/haptics";
 
@@ -305,8 +305,8 @@ const DashboardScreen = () => {
                 >
                   <Avatar.Text
                     size={45}
-                    label={contact.alias.substring(0, 2).toUpperCase()}
-                    style={{ backgroundColor: colors.secondary }}
+                    label={getInitials(contact.alias)}
+                    style={{ backgroundColor: getAvatarColor(contact.alias) }}
                     color="white"
                   />
                   <Text style={styles.contactName} numberOfLines={1}>

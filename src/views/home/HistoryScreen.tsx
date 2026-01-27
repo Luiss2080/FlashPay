@@ -1,4 +1,24 @@
-import { Share, RefreshControl } from "react-native";
+import React, { useState, useEffect } from "react";
+import {
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Share,
+  RefreshControl,
+} from "react-native";
+import {
+  Text,
+  Searchbar,
+  Chip,
+  ActivityIndicator,
+  IconButton,
+} from "react-native-paper";
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import api from "../../services/api";
+import { colors } from "../../utils/theme";
+import { Ionicons } from "@expo/vector-icons";
 import { Skeleton } from "../../components/common/Skeleton";
 import { hapticFeedback } from "../../utils/haptics";
 
@@ -7,7 +27,7 @@ const HistoryScreen = () => {
   const [transactions, setTransactions] = useState<any[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [refreshing, setRefreshing] = useState(false); // Add refreshing state
+  const [refreshing, setRefreshing] = useState(false);
   const [filter, setFilter] = useState<"all" | "ingreso" | "egreso">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -24,8 +44,8 @@ const HistoryScreen = () => {
           `/api/home-data?id_usuario=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
-          setTransactions(response.data.data.transactions);
-          setFilteredTransactions(response.data.data.transactions);
+          setTransactions(response.data.data.transactions || []);
+          setFilteredTransactions(response.data.data.transactions || []);
         }
       }
     } catch (error) {
@@ -51,8 +71,8 @@ const HistoryScreen = () => {
       const message = `
 🧾 *Constancia de Transferencia - FlashPay*
 
-👤 *Origen:* ${item.direccion === "egreso" ? "Tú" : item.otro_usuario_nombre}
-➡️ *Destino:* ${item.direccion === "egreso" ? item.otro_usuario_nombre : "Tú"}
+👤 *Origen:* ${item.direccion === "egreso" ? "Tú" : item.otro_usuario_nombre || "Sistema"}
+➡️ *Destino:* ${item.direccion === "egreso" ? item.otro_usuario_nombre || "Sistema" : "Tú"}
 💰 *Monto:* S/ ${parseFloat(item.monto).toFixed(2)}
 📅 *Fecha:* ${new Date(item.fecha).toLocaleString()}
 🔖 *ID:* ${item.id_transaccion}
@@ -69,7 +89,25 @@ const HistoryScreen = () => {
     }
   };
 
-  // ... useEffect for filtering (keep existing)
+  useEffect(() => {
+    let filtered = transactions;
+
+    if (filter !== "all") {
+      filtered = filtered.filter((t) => t.direccion === filter);
+    }
+
+    if (searchQuery) {
+      filtered = filtered.filter(
+        (t) =>
+          (t.otro_usuario_nombre || "Sistema")
+            .toLowerCase()
+            .includes(searchQuery.toLowerCase()) ||
+          t.tipo.toLowerCase().includes(searchQuery.toLowerCase()),
+      );
+    }
+
+    setFilteredTransactions(filtered);
+  }, [filter, searchQuery, transactions]);
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.transactionItem}>
@@ -125,7 +163,6 @@ const HistoryScreen = () => {
 
   return (
     <View style={styles.container}>
-      {/* ... header and filter container ... */}
       <View style={styles.header}>
         <Ionicons
           name="arrow-back"

@@ -23,6 +23,7 @@ import { colors } from "../../utils/theme";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
+import { Skeleton } from "../../components/common/Skeleton";
 
 const ServicesScreen = () => {
   const navigation = useNavigation<any>();
@@ -111,34 +112,33 @@ const ServicesScreen = () => {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case "luz":
-        return "flash";
-      case "agua":
-        return "water";
-      case "telefonia":
-        return "call";
-      case "internet":
-        return "wifi";
-      default:
-        return "receipt";
-    }
+  const getCategoryIcon = (category: string, name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes("luz") || n.includes("enel")) return "flash";
+    if (n.includes("agua") || n.includes("sedapal")) return "water";
+    if (
+      n.includes("movistar") ||
+      n.includes("claro") ||
+      n.includes("entel") ||
+      n.includes("bitel")
+    )
+      return "phone-portrait";
+    if (n.includes("internet") || n.includes("win") || n.includes("nubyx"))
+      return "wifi";
+    return "receipt";
   };
 
-  const getCategoryColor = (category: string) => {
-    switch (category) {
-      case "luz":
-        return "#FFC107"; // Amber
-      case "agua":
-        return "#03A9F4"; // Light Blue
-      case "telefonia":
-        return "#E91E63"; // Pink
-      case "internet":
-        return "#9C27B0"; // Purple
-      default:
-        return "#607D8B"; // Grey
-    }
+  const getBrandColor = (name: string) => {
+    const n = name.toLowerCase();
+    if (n.includes("luz del sur")) return "#FF9800"; // Orange
+    if (n.includes("enel")) return "#0055A4"; // Blue Enel
+    if (n.includes("sedapal")) return "#03A9F4"; // Light Blue
+    if (n.includes("movistar")) return "#003399"; // Movistar Blue
+    if (n.includes("claro")) return "#DA291C"; // Claro Red
+    if (n.includes("entel")) return "#FF5722"; // Entel Orange
+    if (n.includes("bitel")) return "#FFEB3B"; // Bitel Yellow
+    if (n.includes("win")) return "#FF5722"; // Win Orange
+    return "#607D8B"; // Default Grey
   };
 
   return (
@@ -166,42 +166,62 @@ const ServicesScreen = () => {
         </View>
 
         {loading ? (
-          <ActivityIndicator
-            size="large"
-            color={colors.primary}
-            style={{ marginTop: 50 }}
-          />
+          <View style={{ padding: 20 }}>
+            {[1, 2, 3, 4, 5].map((i) => (
+              <View
+                key={i}
+                style={{
+                  flexDirection: "row",
+                  marginBottom: 15,
+                  alignItems: "center",
+                }}
+              >
+                <Skeleton width={45} height={45} style={{ borderRadius: 10 }} />
+                <View style={{ marginLeft: 15, flex: 1 }}>
+                  <Skeleton
+                    width="50%"
+                    height={16}
+                    style={{ marginBottom: 5 }}
+                  />
+                  <Skeleton width="30%" height={12} />
+                </View>
+              </View>
+            ))}
+          </View>
         ) : (
           <ScrollView style={styles.content}>
-            {filteredServices.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.serviceItem}
-                onPress={() => setSelectedService(item)}
-              >
-                <View
-                  style={[
-                    styles.iconBox,
-                    {
-                      backgroundColor: getCategoryColor(item.categoria) + "20",
-                    },
-                  ]}
+            {filteredServices.map((item, index) => {
+              const brandColor = getBrandColor(item.nombre);
+              return (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.serviceItem}
+                  onPress={() => setSelectedService(item)}
                 >
-                  <Ionicons
-                    name={getCategoryIcon(item.categoria) as any}
-                    size={24}
-                    color={getCategoryColor(item.categoria)}
-                  />
-                </View>
-                <View style={{ marginLeft: 15, flex: 1 }}>
-                  <Text style={styles.serviceName}>{item.nombre}</Text>
-                  <Text style={styles.serviceCategory}>
-                    {item.categoria.toUpperCase()}
-                  </Text>
-                </View>
-                <Ionicons name="chevron-forward" size={20} color="#ccc" />
-              </TouchableOpacity>
-            ))}
+                  <View
+                    style={[
+                      styles.iconBox,
+                      {
+                        backgroundColor: brandColor + "20",
+                      },
+                    ]}
+                  >
+                    <Ionicons
+                      name={getCategoryIcon(item.categoria, item.nombre) as any}
+                      size={24}
+                      color={brandColor}
+                    />
+                  </View>
+                  <View style={{ marginLeft: 15, flex: 1 }}>
+                    <Text style={styles.serviceName}>{item.nombre}</Text>
+                    <Text style={styles.serviceCategory}>
+                      {item.categoria.toUpperCase()}
+                    </Text>
+                  </View>
+                  <Ionicons name="chevron-forward" size={20} color="#ccc" />
+                </TouchableOpacity>
+              );
+            })}
             <View style={{ height: 50 }} />
           </ScrollView>
         )}
@@ -221,14 +241,19 @@ const ServicesScreen = () => {
                       styles.iconBox,
                       {
                         backgroundColor:
-                          getCategoryColor(selectedService.categoria) + "20",
+                          getBrandColor(selectedService.nombre) + "20",
                       },
                     ]}
                   >
                     <Ionicons
-                      name={getCategoryIcon(selectedService.categoria) as any}
+                      name={
+                        getCategoryIcon(
+                          selectedService.categoria,
+                          selectedService.nombre,
+                        ) as any
+                      }
                       size={24}
-                      color={getCategoryColor(selectedService.categoria)}
+                      color={getBrandColor(selectedService.nombre)}
                     />
                   </View>
                   <Text style={styles.modalTitle}>
