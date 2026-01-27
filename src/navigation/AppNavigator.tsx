@@ -4,26 +4,29 @@ import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 
-import LoginScreen from "../views/auth/LoginScreen";
-import DashboardScreen from "../views/home/DashboardScreen";
-import ProfileScreen from "../views/profile/ProfileScreen";
-import QRScanScreen from "../views/operations/QRScanScreen";
-import TransferScreen from "../views/operations/TransferScreen";
-import ServicesScreen from "../views/operations/ServicesScreen";
-import TopUpScreen from "../views/operations/TopUpScreen";
-import DepositScreen from "../views/operations/DepositScreen";
-import PromosScreen from "../views/promos/PromosScreen";
-import HistoryScreen from "../views/home/HistoryScreen";
-import HelpScreen from "../views/profile/HelpScreen";
-import SupportTicketScreen from "../views/support/SupportTicketScreen";
-import FavoritesScreen from "../views/contacts/FavoritesScreen";
-import ProfileEditScreen from "../views/profile/ProfileEditScreen";
-import SecuritySettingsScreen from "../views/profile/SecuritySettingsScreen";
-import ReceiveMoneyScreen from "../views/operations/ReceiveMoneyScreen";
-import TermsScreen from "../views/profile/TermsScreen";
-import TransactionDetailScreen from "../views/home/TransactionDetailScreen";
-import ForgotPasswordScreen from "../views/auth/ForgotPasswordScreen";
-import OnboardingScreen from "../views/auth/OnboardingScreen";
+// Importaciones actualizadas (Español)
+import PantallaLogin from "../views/autenticacion/PantallaLogin";
+import PantallaInicio from "../views/inicio/PantallaInicio";
+import PantallaPerfil from "../views/perfil/PantallaPerfil";
+import PantallaEscanearQR from "../views/operaciones/PantallaEscanearQR";
+import PantallaTransferencia from "../views/operaciones/PantallaTransferencia";
+import PantallaServicios from "../views/operaciones/PantallaServicios";
+import PantallaRecargaCelular from "../views/operaciones/PantallaRecargaCelular";
+import PantallaDeposito from "../views/operaciones/PantallaDeposito";
+import PantallaPromociones from "../views/promociones/PantallaPromociones";
+import PantallaHistorial from "../views/inicio/PantallaHistorial";
+import PantallaAyuda from "../views/perfil/PantallaAyuda";
+import PantallaTicketSoporte from "../views/soporte/PantallaTicketSoporte";
+import PantallaFavoritos from "../views/contactos/PantallaFavoritos";
+import PantallaEditarPerfil from "../views/perfil/PantallaEditarPerfil";
+import PantallaSeguridad from "../views/perfil/PantallaSeguridad";
+import PantallaCobrar from "../views/operaciones/PantallaCobrar";
+import PantallaTerminos from "../views/perfil/PantallaTerminos";
+import PantallaDetalleTransaccion from "../views/inicio/PantallaDetalleTransaccion";
+import PantallaRecuperarClave from "../views/autenticacion/PantallaRecuperarClave";
+import PantallaBienvenida from "../views/autenticacion/PantallaBienvenida";
+import PantallaNotificaciones from "../views/inicio/PantallaNotificaciones";
+
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -50,10 +53,10 @@ const MainTabNavigator = () => {
         },
       })}
     >
-      <Tab.Screen name="Inicio" component={DashboardScreen} />
+      <Tab.Screen name="Inicio" component={PantallaInicio} />
       <Tab.Screen
         name="Historial"
-        component={HistoryScreen}
+        component={PantallaHistorial}
         options={{
           tabBarIcon: ({ color, size, focused }) => (
             <Ionicons
@@ -66,11 +69,11 @@ const MainTabNavigator = () => {
       />
       <Tab.Screen
         name="QR"
-        component={QRScanScreen}
+        component={PantallaEscanearQR}
         options={{ title: "Escanear" }}
       />
-      <Tab.Screen name="Promos" component={PromosScreen} />
-      <Tab.Screen name="Perfil" component={ProfileScreen} />
+      <Tab.Screen name="Promos" component={PantallaPromociones} />
+      <Tab.Screen name="Perfil" component={PantallaPerfil} />
     </Tab.Navigator>
   );
 };
@@ -81,7 +84,7 @@ const AppNavigator = () => {
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen
           name="Login"
-          component={LoginScreen}
+          component={PantallaLogin}
           options={{ headerShown: false }}
         />
         <Stack.Screen
@@ -93,79 +96,84 @@ const AppNavigator = () => {
         {/* Pantallas de Operaciones (Fuera del Tab) */}
         <Stack.Screen
           name="Transfer"
-          component={TransferScreen}
+          component={PantallaTransferencia}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Services"
-          component={ServicesScreen}
+          component={PantallaServicios}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TopUp"
-          component={TopUpScreen}
+          component={PantallaRecargaCelular}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Deposit"
-          component={DepositScreen}
+          component={PantallaDeposito}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="QRScan"
-          component={QRScanScreen}
+          component={PantallaEscanearQR}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Help"
-          component={HelpScreen}
+          component={PantallaAyuda}
           options={{ title: "Ayuda", headerTintColor: colors.primary }}
+        />
+        <Stack.Screen
+          name="Notifications"
+          component={PantallaNotificaciones}
+          options={{ title: "Notificaciones", headerTintColor: colors.primary }}
         />
 
         {/* Customization & New Features */}
         <Stack.Screen
           name="ProfileEdit"
-          component={ProfileEditScreen}
+          component={PantallaEditarPerfil}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SecuritySettings"
-          component={SecuritySettingsScreen}
+          component={PantallaSeguridad}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ReceiveMoney"
-          component={ReceiveMoneyScreen}
+          component={PantallaCobrar}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="SupportTicket"
-          component={SupportTicketScreen}
+          component={PantallaTicketSoporte}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Favorites"
-          component={FavoritesScreen}
+          component={PantallaFavoritos}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Terms"
-          component={TermsScreen}
+          component={PantallaTerminos}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="TransactionDetail"
-          component={TransactionDetailScreen}
+          component={PantallaDetalleTransaccion}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="ForgotPassword"
-          component={ForgotPasswordScreen}
+          component={PantallaRecuperarClave}
           options={{ headerShown: false }}
         />
         <Stack.Screen
           name="Onboarding"
-          component={OnboardingScreen}
+          component={PantallaBienvenida}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>
