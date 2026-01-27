@@ -11,6 +11,7 @@ import QRScanScreen from "../views/operations/QRScanScreen";
 import TransferScreen from "../views/operations/TransferScreen";
 import ServicesScreen from "../views/operations/ServicesScreen";
 import TopUpScreen from "../views/operations/TopUpScreen";
+import DepositScreen from "../views/operations/DepositScreen";
 import PromosScreen from "../views/promos/PromosScreen";
 import HistoryScreen from "../views/home/HistoryScreen";
 import HelpScreen from "../views/profile/HelpScreen";

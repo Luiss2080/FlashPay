@@ -43,7 +43,7 @@ const QRScanScreen = () => {
               // Navegar a Transfer con datos prellenados
               // Nota: Necesitamos actualizar TransferScreen para recibir params
               navigation.navigate("Transfer", {
-                initialPhone: user.telefono,
+                phone: user.telefono,
               });
               setScanned(false);
             },

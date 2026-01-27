@@ -211,16 +211,22 @@ const DashboardScreen = () => {
 
           <TouchableOpacity
             style={styles.gridAction}
+            onPress={() => navigation.navigate("Deposit")}
+          >
+            <View style={[styles.iconBox, { backgroundColor: "#E1F5FE" }]}>
+              <Ionicons name="wallet" size={24} color={colors.primary} />
+            </View>
+            <Text style={styles.gridLabel}>Ingresar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.gridAction}
             onPress={() => navigation.navigate("TopUp")}
           >
             <View style={[styles.iconBox, { backgroundColor: "#F3E5F5" }]}>
-              <Ionicons
-                name="phone-portrait"
-                size={24}
-                color={colors.primary}
-              />
+              <Ionicons name="phone-portrait" size={24} color="#AB47BC" />
             </View>
-            <Text style={styles.gridLabel}>Recargar</Text>
+            <Text style={styles.gridLabel}>Celular</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
@@ -486,6 +492,7 @@ const styles = StyleSheet.create({
   },
   actionGrid: {
     flex: 1,
+    marginHorizontal: 10, // More width
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
