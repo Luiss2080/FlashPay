@@ -43,9 +43,14 @@ import {
   getLimits,
   setLimits,
 } from "../controllers/userController";
+import { getPromos } from "../controllers/promosController";
+
 router.post("/user/update", updateProfile);
 router.post("/user/password", updatePassword);
 router.get("/user/limits", getLimits);
 router.post("/user/limits", setLimits);
+
+// Promos
+router.get("/promos", getPromos);
 
 export default router;

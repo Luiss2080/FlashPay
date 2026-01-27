@@ -166,7 +166,6 @@ const ProfileScreen = () => {
             )}
             onPress={() => navigation.navigate("Terms")}
           />
-          />
         </View>
 
         <Button

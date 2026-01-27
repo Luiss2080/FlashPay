@@ -4,7 +4,10 @@ import { Text, List, Divider } from "react-native-paper";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
+import { useNavigation } from "@react-navigation/native";
+
 const HelpScreen = () => {
+  const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
@@ -62,6 +65,14 @@ const HelpScreen = () => {
             title="Escríbenos"
             description="soporte@flashpay.com"
             left={(props) => <List.Icon {...props} icon="email" />}
+          />
+          <List.Item
+            title="Crear Ticket de Soporte"
+            description="¿No encontraste lo que buscabas?"
+            left={(props) => (
+              <List.Icon {...props} icon="lifebuoy" color={colors.primary} />
+            )}
+            onPress={() => navigation.navigate("SupportTicket")}
           />
         </List.Section>
       </ScrollView>
