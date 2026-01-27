@@ -14,6 +14,11 @@ import TopUpScreen from "../views/operations/TopUpScreen";
 import PromosScreen from "../views/promos/PromosScreen";
 import HistoryScreen from "../views/home/HistoryScreen";
 import HelpScreen from "../views/profile/HelpScreen";
+import SupportTicketScreen from "../views/support/SupportTicketScreen";
+import FavoritesScreen from "../views/contacts/FavoritesScreen";
+import ProfileEditScreen from "../views/profile/ProfileEditScreen";
+import SecuritySettingsScreen from "../views/profile/SecuritySettingsScreen";
+import ReceiveMoneyScreen from "../views/operations/ReceiveMoneyScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -105,6 +110,33 @@ const AppNavigator = () => {
           name="Help"
           component={HelpScreen}
           options={{ title: "Ayuda", headerTintColor: colors.primary }}
+        />
+
+        {/* Customization & New Features */}
+        <Stack.Screen
+          name="ProfileEdit"
+          component={ProfileEditScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SecuritySettings"
+          component={SecuritySettingsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ReceiveMoney"
+          component={ReceiveMoneyScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="SupportTicket"
+          component={SupportTicketScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Favorites"
+          component={FavoritesScreen}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>

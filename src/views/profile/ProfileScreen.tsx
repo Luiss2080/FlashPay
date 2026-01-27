@@ -96,35 +96,49 @@ const ProfileScreen = () => {
         </View>
 
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Configuración</Text>
-          {hasBiometrics && (
-            <List.Item
-              title="Ingreso con Biometría"
-              description="Usar Huella o FaceID para entrar"
-              left={(props) => (
-                <List.Icon
-                  {...props}
-                  icon="fingerprint"
-                  color={colors.primary}
-                />
-              )}
-              right={() => (
-                <Switch
-                  value={biometricsEnabled}
-                  onValueChange={toggleBiometrics}
-                  color={colors.secondary}
-                />
-              )}
-            />
-          )}
+          <Text style={styles.sectionTitle}>Mi Cuenta</Text>
+          <List.Item
+            title="Editar Perfil"
+            description="Actualizar nombre y datos"
+            left={(props) => (
+              <List.Icon
+                {...props}
+                icon="account-edit"
+                color={colors.primary}
+              />
+            )}
+            onPress={() => navigation.navigate("ProfileEdit")}
+          />
           <Divider />
           <List.Item
-            title="Cambiar Contraseña"
+            title="Seguridad"
+            description="Contraseña y Biometría"
             left={(props) => (
-              <List.Icon {...props} icon="lock-reset" color={colors.primary} />
+              <List.Icon {...props} icon="shield-lock" color={colors.primary} />
             )}
-            right={(props) => <List.Icon {...props} icon="chevron-right" />}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("SecuritySettings")}
+          />
+          <Divider />
+          <List.Item
+            title="Cobrar con QR"
+            description="Mi código personal"
+            left={(props) => (
+              <List.Icon {...props} icon="qrcode" color={colors.primary} />
+            )}
+            onPress={() => navigation.navigate("ReceiveMoney")}
+          />
+          <Divider />
+          <List.Item
+            title="Mis Contactos"
+            description="Administrar favoritos"
+            left={(props) => (
+              <List.Icon
+                {...props}
+                icon="account-group"
+                color={colors.primary}
+              />
+            )}
+            onPress={() => navigation.navigate("Favorites")}
           />
         </View>
 
@@ -139,7 +153,7 @@ const ProfileScreen = () => {
                 color={colors.primary}
               />
             )}
-            onPress={() => navigation.navigate("Help")} // Assuming Help exists or we create it
+            onPress={() => navigation.navigate("SupportTicket")}
           />
           <List.Item
             title="Términos y Condiciones"
