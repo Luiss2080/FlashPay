@@ -5,7 +5,7 @@
       "label": "Launch Backend (Browser)",
       "type": "shell",
       "windows": {
-        "command": "cmd /c \"echo Verificando Backend en Laragon... & start http://localhost/FlashPay/api/test.php & echo Backend verificado. Puedes cerrar esta terminal si lo deseas. & pause\""
+        "command": "powershell -Command \"Start-Process 'http://localhost/FlashPay/api/test.php'; Write-Host 'Backend verificado.'; Read-Host 'Presiona Enter para cerrar...'\""
       },
       "presentation": {
         "reveal": "always",
