@@ -4,6 +4,7 @@ import {
   transfer,
   topup,
   payService,
+  deposit,
 } from "../controllers/operationsController";
 import {
   getServices,
@@ -27,6 +28,7 @@ router.get("/home-data", getHomeData);
 // Operations
 router.post("/transfer", transfer);
 router.post("/topup", topup);
+router.post("/deposit", deposit);
 router.post("/services", payService); // POST to pay
 
 // Data

@@ -103,6 +103,11 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
+          name="Deposit"
+          component={DepositScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
           name="QRScan"
           component={QRScanScreen}
           options={{ headerShown: false }}

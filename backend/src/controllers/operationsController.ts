@@ -2,211 +2,170 @@ import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { RowDataPacket, ResultSetHeader } from "mysql2";
 
-// Transfer Logic
 export const transfer = async (req: Request, res: Response) => {
   const { id_emisor, telefono, monto } = req.body;
-
-  if (!id_emisor || !telefono || !monto) {
-    res.status(400).json({ status: "error", message: "Datos incompletos" });
-    return;
-  }
 
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
 
-    // 1. Check Sender Balance
+    // 1. Get Sender
     const [senderRows] = await connection.query<RowDataPacket[]>(
-      "SELECT saldo FROM Usuarios WHERE id_usuario = ?",
+      "SELECT id_usuario, saldo FROM Usuarios WHERE id_usuario = ?",
       [id_emisor],
     );
+
     if (senderRows.length === 0) {
-      await connection.rollback();
-      res
-        .status(404)
-        .json({ status: "error", message: "Usuario emisor no encontrado" });
-      return;
+      throw new Error("Usuario emisor no encontrado");
     }
+
     const sender = senderRows[0];
-    const amount = parseFloat(monto);
-
-    if (sender.saldo < amount) {
-      await connection.rollback();
-      res.status(400).json({ status: "error", message: "Saldo insuficiente" });
-      return;
+    if (parseFloat(sender.saldo) < monto) {
+      throw new Error("Saldo insuficiente");
     }
 
-    // 2. Find Receiver
+    // 2. Get Receiver
     const [receiverRows] = await connection.query<RowDataPacket[]>(
       "SELECT id_usuario FROM Usuarios WHERE telefono = ?",
       [telefono],
     );
+
     if (receiverRows.length === 0) {
-      await connection.rollback();
-      res
-        .status(404)
-        .json({ status: "error", message: "Destinatario no encontrado" });
-      return;
+      throw new Error("Destinatario no encontrado (teléfono inválido)");
     }
     const receiver = receiverRows[0];
 
-    if (receiver.id_usuario == id_emisor) {
-      await connection.rollback();
-      res
-        .status(400)
-        .json({
-          status: "error",
-          message: "No puedes transferirte a ti mismo",
-        });
-      return;
-    }
-
-    // 3. Update Balances
+    // 3. Deduct from Sender
     await connection.query(
       "UPDATE Usuarios SET saldo = saldo - ? WHERE id_usuario = ?",
-      [amount, id_emisor],
-    );
-    await connection.query(
-      "UPDATE Usuarios SET saldo = saldo + ? WHERE id_usuario = ?",
-      [amount, receiver.id_usuario],
+      [monto, id_emisor],
     );
 
-    // 4. Record Transaction
+    // 4. Add to Receiver
     await connection.query(
-      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo) VALUES (?, ?, ?, ?)",
-      [id_emisor, receiver.id_usuario, amount, "transferencia"],
+      "UPDATE Usuarios SET saldo = saldo + ? WHERE id_usuario = ?",
+      [monto, receiver.id_usuario],
+    );
+
+    // 5. Record Transaction
+    await connection.query(
+      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo, descripcion) VALUES (?, ?, ?, 'transferencia', 'Yapeo')",
+      [id_emisor, receiver.id_usuario, monto],
     );
 
     await connection.commit();
-    res.json({ status: "success", message: "Transferencia exitosa" });
-  } catch (error) {
+    res.json({ status: "success", message: "Transferencia realizada" });
+  } catch (error: any) {
     await connection.rollback();
-    console.error(error);
-    res
-      .status(500)
-      .json({ status: "error", message: "Error en la transferencia" });
+    res.status(400).json({ status: "error", message: error.message });
   } finally {
     connection.release();
   }
 };
 
-// Topup Logic
 export const topup = async (req: Request, res: Response) => {
-  const { id_usuario, monto, telefono, operador } = req.body;
-
-  if (!id_usuario || !monto || !telefono) {
-    res.status(400).json({ status: "error", message: "Datos incompletos" });
-    return;
-  }
+  const { id_usuario, telefono, operador, monto } = req.body;
 
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
 
-    const amount = parseFloat(monto);
-
-    // 1. Check Balance
-    const [userRows] = await connection.query<RowDataPacket[]>(
+    // Check balance
+    const [rows] = await connection.query<RowDataPacket[]>(
       "SELECT saldo FROM Usuarios WHERE id_usuario = ?",
       [id_usuario],
     );
-    if (userRows.length === 0) {
-      await connection.rollback();
-      res
-        .status(404)
-        .json({ status: "error", message: "Usuario no encontrado" });
-      return;
-    }
+    if (rows.length === 0) throw new Error("Usuario no encontrado");
+    if (rows[0].saldo < monto) throw new Error("Saldo insuficiente");
 
-    if (userRows[0].saldo < amount) {
-      await connection.rollback();
-      res.status(400).json({ status: "error", message: "Saldo insuficiente" });
-      return;
-    }
-
-    // 2. Deduct Bundle
+    // Deduct
     await connection.query(
       "UPDATE Usuarios SET saldo = saldo - ? WHERE id_usuario = ?",
-      [amount, id_usuario],
+      [monto, id_usuario],
     );
 
-    // 3. Log
-    // Assuming self-topup or generic receptor id for logs, usually 0 or system id.
-    // Since constraints might fail if id_receptor doesn't exist, we assume id_usuario is both actor and beneficiary of the "service",
-    // OR we insert into a separate Topups table if it existed, but we reuse Transacciones with type 'recarga'
-    // Hack: Set receiver as self for now to track expense.
+    // Record (Self transaction or service payment style)
     await connection.query(
-      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo) VALUES (?, ?, ?, ?)",
-      [id_usuario, id_usuario, amount, "recarga"],
+      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo, descripcion) VALUES (?, ?, ?, 'recarga', ?)",
+      [id_usuario, id_usuario, monto, `Recarga ${operador} - ${telefono}`],
     );
 
     await connection.commit();
-    res.json({
-      status: "success",
-      message: `Recarga de S/ ${amount} a ${operador || "celular"} exitosa`,
-    });
-  } catch (error) {
+    res.json({ status: "success", message: "Recarga realizada exitosamente" });
+  } catch (error: any) {
     await connection.rollback();
-    console.error(error);
-    res.status(500).json({ status: "error", message: "Error en la recarga" });
+    res.status(400).json({ status: "error", message: error.message });
   } finally {
     connection.release();
   }
 };
 
-// Pay Service Logic
 export const payService = async (req: Request, res: Response) => {
-  const { user_id, service_id, amount, reference } = req.body;
-
-  if (!user_id || !service_id || !amount || !reference) {
-    res.status(400).json({ status: "error", message: "Datos incompletos" });
-    return;
-  }
+  const { id_usuario, id_servicio, codigo_cliente, monto } = req.body;
 
   const connection = await pool.getConnection();
   try {
     await connection.beginTransaction();
 
-    const monto = parseFloat(amount);
-
-    // 1. Check Balance
-    const [userRows] = await connection.query<RowDataPacket[]>(
+    // Check balance
+    const [rows] = await connection.query<RowDataPacket[]>(
       "SELECT saldo FROM Usuarios WHERE id_usuario = ?",
-      [user_id],
+      [id_usuario],
     );
-    if (userRows.length === 0 || userRows[0].saldo < monto) {
-      await connection.rollback();
-      res
-        .status(400)
-        .json({
-          status: "error",
-          message: "Saldo insuficiente o usuario no encontrado",
-        });
-      return;
-    }
+    if (rows.length === 0) throw new Error("Usuario no encontrado");
+    if (rows[0].saldo < monto) throw new Error("Saldo insuficiente");
 
-    // 2. Deduct Balance
+    // Deduct
     await connection.query(
       "UPDATE Usuarios SET saldo = saldo - ? WHERE id_usuario = ?",
-      [monto, user_id],
+      [monto, id_usuario],
     );
 
-    // 3. Record Payment
+    // Record
     await connection.query(
-      "INSERT INTO Pagos_Servicios (id_usuario, id_servicio, monto, referencia) VALUES (?, ?, ?, ?)",
-      [user_id, service_id, monto, reference],
+      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo, descripcion) VALUES (?, ?, ?, 'servicio', ?)",
+      [
+        id_usuario,
+        id_usuario,
+        monto,
+        `Pago Servicio #${id_servicio} - ${codigo_cliente}`,
+      ],
     );
-
-    // Optional: Log in Transacciones with type 'pago' (skipping to avoid complexity with ID receptor)
 
     await connection.commit();
-    res.json({ status: "success", message: "Pago realizado con éxito" });
-  } catch (error) {
+    res.json({ status: "success", message: "Servicio pagado exitosamente" });
+  } catch (error: any) {
     await connection.rollback();
-    console.error(error);
-    res
-      .status(500)
-      .json({ status: "error", message: "Error al procesar el pago" });
+    res.status(400).json({ status: "error", message: error.message });
+  } finally {
+    connection.release();
+  }
+};
+
+export const deposit = async (req: Request, res: Response) => {
+  const { id_usuario, monto, metodo } = req.body;
+
+  const connection = await pool.getConnection();
+  try {
+    await connection.beginTransaction();
+
+    // Add balance (It's a deposit)
+    await connection.query(
+      "UPDATE Usuarios SET saldo = saldo + ? WHERE id_usuario = ?",
+      [monto, id_usuario],
+    );
+
+    // Record
+    await connection.query(
+      "INSERT INTO Transacciones (id_emisor, id_receptor, monto, tipo, descripcion) VALUES (?, ?, ?, 'ingreso', ?)",
+      [id_usuario, id_usuario, monto, `Ingreso vía ${metodo}`],
+    );
+
+    await connection.commit();
+    res.json({ status: "success", message: "Depósito realizado exitosamente" });
+  } catch (error: any) {
+    await connection.rollback();
+    res.status(400).json({ status: "error", message: error.message });
   } finally {
     connection.release();
   }
