@@ -10,8 +10,10 @@ import ProfileScreen from "../views/profile/ProfileScreen";
 import QRScanScreen from "../views/operations/QRScanScreen";
 import TransferScreen from "../views/operations/TransferScreen";
 import ServicesScreen from "../views/operations/ServicesScreen";
-import TopUpScreen from "../views/operations/TopUpScreen"; // Asegúrate que el archivo exista
+import TopUpScreen from "../views/operations/TopUpScreen";
 import PromosScreen from "../views/promos/PromosScreen";
+import HistoryScreen from "../views/history/HistoryScreen";
+import HelpScreen from "../views/profile/HelpScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -39,6 +41,19 @@ const MainTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Inicio" component={DashboardScreen} />
+      <Tab.Screen
+        name="Historial"
+        component={HistoryScreen}
+        options={{
+          tabBarIcon: ({ color, size, focused }) => (
+            <Ionicons
+              name={focused ? "time" : "time-outline"}
+              size={size}
+              color={color}
+            />
+          ),
+        }}
+      />
       <Tab.Screen
         name="QR"
         component={QRScanScreen}
@@ -85,6 +100,11 @@ const AppNavigator = () => {
           name="QRScan"
           component={QRScanScreen}
           options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Help"
+          component={HelpScreen}
+          options={{ title: "Ayuda", headerTintColor: colors.primary }}
         />
       </Stack.Navigator>
     </NavigationContainer>

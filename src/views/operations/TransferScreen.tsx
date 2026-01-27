@@ -6,13 +6,14 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
+import SuccessReceipt from "../../components/SuccessReceipt";
 
 const TransferScreen = () => {
   const navigation = useNavigation<any>();
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
   const [loading, setLoading] = useState(false);
-  const [step, setStep] = useState(1); // 1: Datos, 2: Confirmación
+  const [showReceipt, setShowReceipt] = useState(false);
 
   const handleTransfer = async () => {
     if (!phone || !amount) {
@@ -33,9 +34,7 @@ const TransferScreen = () => {
       });
 
       if (response.data.status === "success") {
-        Alert.alert("¡Éxito!", "Transferencia realizada correctamente", [
-          { text: "OK", onPress: () => navigation.navigate("Dashboard") },
-        ]);
+        setShowReceipt(true);
       } else {
         Alert.alert("Error", response.data.message);
       }
@@ -52,6 +51,16 @@ const TransferScreen = () => {
 
   return (
     <View style={styles.container}>
+      <SuccessReceipt
+        visible={showReceipt}
+        onClose={() => {
+          setShowReceipt(false);
+          navigation.navigate("Inicio");
+        }}
+        amount={amount}
+        receiver={phone}
+        message="Transferencia FlashPay"
+      />
       <View style={styles.header}>
         <Ionicons
           name="arrow-back"
