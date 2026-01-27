@@ -36,4 +36,16 @@ router.post("/contacts", addContact);
 router.get("/notifications", getNotifications);
 router.get("/resolve-qr", resolveQR);
 
+// User Profile & Settings
+import {
+  updateProfile,
+  updatePassword,
+  getLimits,
+  setLimits,
+} from "../controllers/userController";
+router.post("/user/update", updateProfile);
+router.post("/user/password", updatePassword);
+router.get("/user/limits", getLimits);
+router.post("/user/limits", setLimits);
+
 export default router;
