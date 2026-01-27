@@ -5,11 +5,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import LoginScreen from "../views/auth/LoginScreen";
 import DashboardScreen from "../views/home/DashboardScreen";
-import {
-  ProfileScreen,
-  TransferScreen,
-  QRScanScreen,
-} from "../views/operations/Placeholders";
+import { ProfileScreen, QRScanScreen } from "../views/operations/Placeholders";
+import TransferScreen from "../views/operations/TransferScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();

@@ -6,8 +6,13 @@ $id_usuario = isset($_GET['id_usuario']) ? intval($_GET['id_usuario']) : 0;
 if ($id_usuario > 0) {
     $response = [];
 
-    // 1. Obtener Saldo
-    $stmt = $conn->prepare("SELECT saldo, nombre FROM Usuarios WHERE id_usuario = ?");
+    // 1. Obtener Saldo y QR
+    $sql_user = "SELECT u.saldo, u.nombre, u.email, u.telefono, q.codigo_qr 
+                 FROM Usuarios u 
+                 LEFT JOIN QR_Pagos q ON u.id_usuario = q.id_usuario 
+                 WHERE u.id_usuario = ?";
+    
+    $stmt = $conn->prepare($sql_user);
     $stmt->bind_param("i", $id_usuario);
     $stmt->execute();
     $result = $stmt->get_result();
