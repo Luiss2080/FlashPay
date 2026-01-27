@@ -18,6 +18,8 @@ const DashboardScreen = () => {
   const navigation = useNavigation<any>();
   const [userData, setUserData] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
+  const [notifications, setNotifications] = useState<any[]>([]);
+  const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [showBalance, setShowBalance] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -29,7 +31,6 @@ const DashboardScreen = () => {
         const user = JSON.parse(storedUser);
         setUserData(user);
 
-        // Fetch updated balance and transactions
         const response = await api.get(
           `/home_data.php?id_usuario=${user.id_usuario}`,
         );
@@ -38,7 +39,9 @@ const DashboardScreen = () => {
             ...prev,
             saldo: response.data.data.user.saldo,
           }));
-          setTransactions(response.data.data.transactions);
+          setTransactions(response.data.data.transactions || []);
+          setNotifications(response.data.data.notifications || []);
+          setContacts(response.data.data.contacts || []);
         }
       }
     } catch (error) {
@@ -58,93 +61,109 @@ const DashboardScreen = () => {
     fetchDashboardData();
   };
 
+  const promos = notifications.filter((n) => n.tipo === "promo");
+
   return (
     <View style={styles.container}>
+      {/* Header Gradient Style */}
       <View style={styles.header}>
         <View style={styles.headerTop}>
-          <Image
-            source={{
-              uri:
-                "https://ui-avatars.com/api/?name=" +
-                (userData?.nombre || "User") +
-                "&background=random",
-            }}
-            style={styles.avatar}
-          />
+          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+            <Image
+              source={{
+                uri:
+                  "https://ui-avatars.com/api/?name=" +
+                  (userData?.nombre || "User") +
+                  "&background=random",
+              }}
+              style={styles.avatar}
+            />
+          </TouchableOpacity>
           <Text style={styles.greeting}>
             Hola, {userData?.nombre?.split(" ")[0]}
           </Text>
-          <IconButton
-            icon="bell-outline"
-            iconColor="white"
-            size={24}
-            onPress={() => {}}
-          />
+          <View>
+            <IconButton
+              icon="bell-outline"
+              iconColor="white"
+              size={24}
+              onPress={() => navigation.navigate("Notifications")}
+            />
+            {notifications.length > 0 && (
+              <View style={styles.badge}>
+                <Text style={styles.badgeText}>{notifications.length}</Text>
+              </View>
+            )}
+          </View>
         </View>
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Saldo disponible</Text>
-          <View style={styles.balanceRow}>
+          <TouchableOpacity
+            style={styles.balanceRow}
+            onPress={() => setShowBalance(!showBalance)}
+          >
             <Text style={styles.currencySymbol}>S/ </Text>
             <Text style={styles.balanceAmount}>
               {showBalance
                 ? parseFloat(userData?.saldo || 0).toFixed(2)
                 : "***.**"}
             </Text>
-            <IconButton
-              icon={showBalance ? "eye-off" : "eye"}
-              iconColor="white"
+            <Ionicons
+              name={showBalance ? "eye-off-outline" : "eye-outline"}
               size={20}
-              onPress={() => setShowBalance(!showBalance)}
+              color="rgba(255,255,255,0.8)"
+              style={{ marginLeft: 10 }}
             />
-          </View>
+          </TouchableOpacity>
         </View>
       </View>
 
-      <View style={styles.actionsContainer}>
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={() => navigation.navigate("QRScan")}
-        >
-          <View style={styles.qrButton}>
-            <Ionicons name="scan-outline" size={32} color="white" />
-            <Text style={styles.qrText}>Escanear QR</Text>
-          </View>
-        </TouchableOpacity>
-
-        <View style={styles.secondaryActions}>
+      {/* Quick Actions Floating Card */}
+      <View style={styles.actionsCard}>
+        <View style={styles.qrSection}>
           <TouchableOpacity
-            style={styles.secondaryBtn}
+            style={styles.qrButton}
+            onPress={() => navigation.navigate("QRScan")}
+          >
+            <Ionicons name="scan" size={30} color="white" />
+            <Text style={styles.qrText}>Escanear</Text>
+          </TouchableOpacity>
+        </View>
+
+        <View style={styles.actionGrid}>
+          <TouchableOpacity
+            style={styles.gridAction}
             onPress={() => navigation.navigate("Transfer")}
           >
-            <View style={[styles.iconCircle, { backgroundColor: "#e0f2f1" }]}>
+            <View style={[styles.iconBox, { backgroundColor: "#E0F2F1" }]}>
               <Ionicons name="send" size={24} color={colors.secondary} />
             </View>
-            <Text style={styles.actionText}>Transferir</Text>
+            <Text style={styles.gridLabel}>Transferir</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.secondaryBtn}
+            style={styles.gridAction}
             onPress={() => navigation.navigate("TopUp")}
           >
-            <View style={[styles.iconCircle, { backgroundColor: "#f3e5f5" }]}>
+            <View style={[styles.iconBox, { backgroundColor: "#F3E5F5" }]}>
               <Ionicons
-                name="phone-portrait-outline"
+                name="phone-portrait"
                 size={24}
                 color={colors.primary}
               />
             </View>
-            <Text style={styles.actionText}>Recargar</Text>
+            <Text style={styles.gridLabel}>Recargar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.secondaryBtn}
+            style={styles.gridAction}
             onPress={() => navigation.navigate("Services")}
           >
-            <View style={[styles.iconCircle, { backgroundColor: "#e3f2fd" }]}>
-              <Ionicons name="bulb-outline" size={24} color="#1565c0" />
+            <View style={[styles.iconBox, { backgroundColor: "#FFF3E0" }]}>
+              <Ionicons name="bulb" size={24} color="#F57C00" />
             </View>
-            <Text style={styles.actionText}>Servicios</Text>
+            <Text style={styles.gridLabel}>Servicios</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -154,53 +173,131 @@ const DashboardScreen = () => {
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
+        showsVerticalScrollIndicator={false}
       >
+        {/* Promos Section */}
+        {promos.length > 0 && (
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Promociones para ti</Text>
+            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+              {promos.map((promo, index) => (
+                <Card key={index} style={styles.promoCard}>
+                  <Card.Cover
+                    source={{
+                      uri: "https://via.placeholder.com/300x150/742384/ffffff?text=Promo",
+                    }}
+                    style={{ height: 100 }}
+                  />
+                  <Card.Content>
+                    <Text style={styles.promoTitle}>{promo.titulo}</Text>
+                    <Text style={styles.promoText} numberOfLines={2}>
+                      {promo.mensaje}
+                    </Text>
+                  </Card.Content>
+                </Card>
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Favorites / Contacts Section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>Transferir a...</Text>
+          {contacts.length === 0 ? (
+            <View style={styles.emptyContacts}>
+              <Text style={{ color: "#999" }}>No tienes favoritos aún</Text>
+              <Button
+                mode="text"
+                onPress={() => navigation.navigate("Transfer")}
+              >
+                Agregar
+              </Button>
+            </View>
+          ) : (
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              style={{ paddingBottom: 10 }}
+            >
+              <TouchableOpacity
+                style={styles.addContactBtn}
+                onPress={() => navigation.navigate("Transfer")}
+              >
+                <View style={styles.addContactIcon}>
+                  <Ionicons name="add" size={24} color={colors.primary} />
+                </View>
+                <Text style={styles.contactName}>Nuevo</Text>
+              </TouchableOpacity>
+              {contacts.map((contact, index) => (
+                <TouchableOpacity
+                  key={index}
+                  style={styles.contactItem}
+                  onPress={() =>
+                    navigation.navigate("Transfer", { phone: contact.telefono })
+                  }
+                >
+                  <Avatar.Text
+                    size={45}
+                    label={contact.alias.substring(0, 2).toUpperCase()}
+                    style={{ backgroundColor: colors.secondary }}
+                    color="white"
+                  />
+                  <Text style={styles.contactName} numberOfLines={1}>
+                    {contact.alias}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </ScrollView>
+          )}
+        </View>
+
         <Text style={styles.sectionTitle}>Últimos movimientos</Text>
         {transactions.length === 0 ? (
           <Text style={styles.emptyText}>No tienes movimientos recientes.</Text>
         ) : (
           transactions.map((tx, index) => (
-            <Card key={index} style={styles.transactionCard}>
-              <Card.Content style={styles.transactionRow}>
-                <View style={styles.transactionIcon}>
-                  <Ionicons
-                    name={
-                      tx.direccion === "ingreso"
-                        ? "arrow-down-circle"
-                        : "arrow-up-circle"
-                    }
-                    size={24}
-                    color={
-                      tx.direccion === "ingreso" ? colors.success : colors.error
-                    }
-                  />
-                </View>
-                <View style={styles.transactionInfo}>
-                  <Text style={styles.transactionName}>
-                    {tx.otro_usuario_nombre}
-                  </Text>
-                  <Text style={styles.transactionType}>
-                    {tx.tipo} - {new Date(tx.fecha).toLocaleDateString()}
-                  </Text>
-                </View>
-                <Text
-                  style={[
-                    styles.transactionAmount,
-                    {
-                      color:
-                        tx.direccion === "ingreso"
-                          ? colors.success
-                          : colors.error,
-                    },
-                  ]}
-                >
-                  {tx.direccion === "ingreso" ? "+" : "-"} S/{" "}
-                  {parseFloat(tx.monto).toFixed(2)}
+            <TouchableOpacity key={index} style={styles.transactionItem}>
+              <View
+                style={[
+                  styles.txIconCtx,
+                  {
+                    backgroundColor:
+                      tx.direccion === "ingreso" ? "#E8F5E9" : "#FFEBEE",
+                  },
+                ]}
+              >
+                <Ionicons
+                  name={tx.direccion === "ingreso" ? "arrow-down" : "arrow-up"}
+                  size={20}
+                  color={
+                    tx.direccion === "ingreso" ? colors.success : colors.error
+                  }
+                />
+              </View>
+              <View style={{ flex: 1, marginLeft: 15 }}>
+                <Text style={styles.txName}>{tx.otro_usuario_nombre}</Text>
+                <Text style={styles.txDate}>
+                  {tx.tipo} • {new Date(tx.fecha).toLocaleDateString()}
                 </Text>
-              </Card.Content>
-            </Card>
+              </View>
+              <Text
+                style={[
+                  styles.txAmount,
+                  {
+                    color:
+                      tx.direccion === "ingreso"
+                        ? colors.success
+                        : colors.error,
+                  },
+                ]}
+              >
+                {tx.direccion === "ingreso" ? "+" : "-"} S/{" "}
+                {parseFloat(tx.monto).toFixed(2)}
+              </Text>
+            </TouchableOpacity>
           ))
         )}
+        <View style={{ height: 100 }} />
       </ScrollView>
     </View>
   );
@@ -214,10 +311,10 @@ const styles = StyleSheet.create({
   header: {
     backgroundColor: colors.primary,
     paddingTop: 50,
-    paddingBottom: 40,
+    paddingBottom: 90, // More space for the floating card
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 30,
-    borderBottomRightRadius: 30,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
   },
   headerTop: {
     flexDirection: "row",
@@ -239,121 +336,202 @@ const styles = StyleSheet.create({
     flex: 1,
     marginLeft: 10,
   },
+  badge: {
+    position: "absolute",
+    top: 5,
+    right: 5,
+    backgroundColor: colors.error,
+    borderRadius: 10,
+    width: 16,
+    height: 16,
+    justifyContent: "center",
+    alignItems: "center",
+    borderWidth: 1,
+    borderColor: colors.primary, // Blend with header
+  },
+  badgeText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
+  },
   balanceContainer: {
     alignItems: "center",
+    marginTop: 10,
   },
   balanceLabel: {
-    color: "rgba(255,255,255,0.7)",
+    color: "rgba(255,255,255,0.8)",
     fontSize: 14,
   },
   balanceRow: {
     flexDirection: "row",
     alignItems: "center",
+    marginTop: 5,
   },
   currencySymbol: {
     color: "white",
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: "bold",
   },
   balanceAmount: {
     color: "white",
-    fontSize: 32,
+    fontSize: 40,
     fontWeight: "bold",
   },
-  actionsContainer: {
-    marginTop: -30,
-    paddingHorizontal: 20,
-    alignItems: "center",
+  actionsCard: {
+    flexDirection: "row",
+    backgroundColor: "white",
+    marginHorizontal: 20,
+    marginTop: -60, // Overlap header
+    borderRadius: 15,
+    padding: 15,
+    elevation: 4,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
   },
-  actionButton: {
-    marginBottom: 20,
+  qrSection: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderRightWidth: 1,
+    borderRightColor: "#eee",
+    paddingRight: 15,
+    marginRight: 15,
   },
   qrButton: {
     backgroundColor: colors.secondary,
-    width: 70,
-    height: 70,
-    borderRadius: 35,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
     justifyContent: "center",
     alignItems: "center",
-    elevation: 5,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+    elevation: 2,
   },
   qrText: {
-    color: "white",
-    fontSize: 8,
-    marginTop: 2,
+    color: colors.secondary,
+    fontSize: 10,
     fontWeight: "bold",
+    marginTop: 4,
+    position: "absolute",
+    bottom: -18,
+    width: 80,
+    textAlign: "center",
   },
-  secondaryActions: {
+  actionGrid: {
+    flex: 1,
     flexDirection: "row",
-    justifyContent: "space-around",
-    width: "100%",
-    marginBottom: 10,
-  },
-  secondaryBtn: {
+    justifyContent: "space-between",
     alignItems: "center",
   },
-  iconCircle: {
-    width: 50,
-    height: 50,
-    borderRadius: 25,
+  gridAction: {
+    alignItems: "center",
+    width: 60,
+  },
+  iconBox: {
+    width: 45,
+    height: 45,
+    borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
     marginBottom: 5,
   },
-  actionText: {
-    color: colors.text,
-    fontSize: 12,
+  gridLabel: {
+    fontSize: 10,
+    color: "#555",
+    textAlign: "center",
   },
   content: {
     flex: 1,
     paddingHorizontal: 20,
+    paddingTop: 25,
+  },
+  sectionContainer: {
+    marginBottom: 20,
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: colors.text,
-    marginBottom: 10,
-    marginTop: 10,
+    marginBottom: 15,
+  },
+  promoCard: {
+    width: 250,
+    marginRight: 15,
+    borderRadius: 12,
+    overflow: "hidden",
+  },
+  promoTitle: {
+    fontWeight: "bold",
+    fontSize: 14,
+    marginTop: 5,
+  },
+  promoText: {
+    fontSize: 12,
+    color: "#666",
+  },
+  contactItem: {
+    alignItems: "center",
+    marginRight: 15,
+    width: 60,
+  },
+  contactName: {
+    fontSize: 11,
+    marginTop: 5,
+    color: colors.text,
+    textAlign: "center",
+  },
+  addContactBtn: {
+    alignItems: "center",
+    marginRight: 15,
+    width: 60,
+  },
+  addContactIcon: {
+    width: 45,
+    height: 45,
+    borderRadius: 22.5,
+    borderWidth: 1,
+    borderColor: colors.primary,
+    borderStyle: "dashed",
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  emptyContacts: {
+    alignItems: "center",
+    padding: 10,
   },
   emptyText: {
     textAlign: "center",
     color: "#888",
     marginTop: 20,
   },
-  transactionCard: {
-    marginBottom: 10,
-    backgroundColor: "white",
-    borderRadius: 10,
-    elevation: 2,
-  },
-  transactionRow: {
+  transactionItem: {
     flexDirection: "row",
     alignItems: "center",
-    paddingVertical: 5,
+    backgroundColor: "white",
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 10,
   },
-  transactionIcon: {
-    marginRight: 15,
+  txIconCtx: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  transactionInfo: {
-    flex: 1,
-  },
-  transactionName: {
+  txName: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
     color: colors.text,
   },
-  transactionType: {
-    color: "#888",
+  txDate: {
     fontSize: 12,
-    textTransform: "capitalize",
+    color: "#999",
+    marginTop: 2,
   },
-  transactionAmount: {
+  txAmount: {
     fontWeight: "bold",
-    fontSize: 16,
+    fontSize: 15,
   },
 });
 
