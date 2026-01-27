@@ -10,9 +10,16 @@
   },
   "dependencies": {
     "expo": "~54.0.32",
+    "expo-barcode-scanner": "^13.0.1",
+    "expo-camera": "~17.0.10",
+    "expo-local-authentication": "~17.0.8",
+    "expo-notifications": "~0.32.16",
+    "expo-secure-store": "~15.0.8",
     "expo-status-bar": "~3.0.9",
     "react": "19.1.0",
-    "react-native": "0.81.5"
+    "react-native": "0.81.5",
+    "react-native-safe-area-context": "~5.6.0",
+    "react-native-screens": "~4.16.0"
   },
   "devDependencies": {
     "@types/react": "~19.1.0",

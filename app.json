@@ -25,6 +25,10 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      "expo-barcode-scanner",
+      "expo-secure-store"
+    ]
   }
 }
