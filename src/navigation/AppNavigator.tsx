@@ -21,6 +21,9 @@ import ProfileEditScreen from "../views/profile/ProfileEditScreen";
 import SecuritySettingsScreen from "../views/profile/SecuritySettingsScreen";
 import ReceiveMoneyScreen from "../views/operations/ReceiveMoneyScreen";
 import TermsScreen from "../views/profile/TermsScreen";
+import TransactionDetailScreen from "../views/home/TransactionDetailScreen";
+import ForgotPasswordScreen from "../views/auth/ForgotPasswordScreen";
+import OnboardingScreen from "../views/auth/OnboardingScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -148,6 +151,21 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Terms"
           component={TermsScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TransactionDetail"
+          component={TransactionDetailScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ForgotPassword"
+          component={ForgotPasswordScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Onboarding"
+          component={OnboardingScreen}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

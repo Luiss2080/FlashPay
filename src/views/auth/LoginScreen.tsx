@@ -15,8 +15,16 @@ const LoginScreen = () => {
   const [hasBiometrics, setHasBiometrics] = useState(false);
 
   useEffect(() => {
+    checkOnboarding();
     checkBiometrics();
   }, []);
+
+  const checkOnboarding = async () => {
+      const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
+      if (!hasSeen) {
+          navigation.replace("Onboarding");
+      }
+  };
 
   const checkBiometrics = async () => {
     const compatible = await LocalAuthentication.hasHardwareAsync();
@@ -112,6 +120,12 @@ const LoginScreen = () => {
       {formik.touched.password && formik.errors.password && (
         <Text style={styles.errorText}>{formik.errors.password}</Text>
       )}
+
+      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={{textAlign: 'right', color: '#666', marginBottom: 20, marginTop: 5}}>
+              ¿Olvidaste tu contraseña?
+          </Text>
+      </TouchableOpacity>
 
       <Button
         mode="contained"

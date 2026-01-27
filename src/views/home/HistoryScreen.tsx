@@ -110,7 +110,12 @@ const HistoryScreen = () => {
   }, [filter, searchQuery, transactions]);
 
   const renderItem = ({ item }: { item: any }) => (
-    <View style={styles.transactionItem}>
+    <TouchableOpacity
+      style={styles.transactionItem}
+      onPress={() =>
+        navigation.navigate("TransactionDetail", { transaction: item })
+      }
+    >
       <View
         style={[
           styles.iconBox,
@@ -147,18 +152,14 @@ const HistoryScreen = () => {
           {item.direccion === "ingreso" ? "+" : "-"} S/{" "}
           {parseFloat(item.monto).toFixed(2)}
         </Text>
-        <TouchableOpacity
-          onPress={() => handleShare(item)}
+        <Ionicons
+          name="chevron-forward"
+          size={18}
+          color="#ccc"
           style={{ marginTop: 5 }}
-        >
-          <Ionicons
-            name="share-social-outline"
-            size={18}
-            color={colors.primary}
-          />
-        </TouchableOpacity>
+        />
       </View>
-    </View>
+    </TouchableOpacity>
   );
 
   return (
