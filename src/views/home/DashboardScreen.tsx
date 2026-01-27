@@ -34,7 +34,7 @@ const DashboardScreen = () => {
           `/home_data.php?id_usuario=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
-          setUserData((prev) => ({
+          setUserData((prev: any) => ({
             ...prev,
             saldo: response.data.data.user.saldo,
           }));
@@ -123,7 +123,10 @@ const DashboardScreen = () => {
             <Text style={styles.actionText}>Transferir</Text>
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.secondaryBtn}>
+          <TouchableOpacity
+            style={styles.secondaryBtn}
+            onPress={() => navigation.navigate("TopUp")}
+          >
             <View style={[styles.iconCircle, { backgroundColor: "#f3e5f5" }]}>
               <Ionicons
                 name="phone-portrait-outline"
@@ -132,6 +135,16 @@ const DashboardScreen = () => {
               />
             </View>
             <Text style={styles.actionText}>Recargar</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.secondaryBtn}
+            onPress={() => navigation.navigate("Services")}
+          >
+            <View style={[styles.iconCircle, { backgroundColor: "#e3f2fd" }]}>
+              <Ionicons name="bulb-outline" size={24} color="#1565c0" />
+            </View>
+            <Text style={styles.actionText}>Servicios</Text>
           </TouchableOpacity>
         </View>
       </View>
