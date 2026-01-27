@@ -19,6 +19,7 @@ import FavoritesScreen from "../views/contacts/FavoritesScreen";
 import ProfileEditScreen from "../views/profile/ProfileEditScreen";
 import SecuritySettingsScreen from "../views/profile/SecuritySettingsScreen";
 import ReceiveMoneyScreen from "../views/operations/ReceiveMoneyScreen";
+import TermsScreen from "../views/profile/TermsScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();

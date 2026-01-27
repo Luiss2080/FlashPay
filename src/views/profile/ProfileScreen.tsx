@@ -164,7 +164,8 @@ const ProfileScreen = () => {
                 color={colors.primary}
               />
             )}
-            onPress={() => {}}
+            onPress={() => navigation.navigate("Terms")}
+          />
           />
         </View>
 
