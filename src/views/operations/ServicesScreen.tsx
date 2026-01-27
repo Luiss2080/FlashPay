@@ -41,7 +41,7 @@ const ServicesScreen = () => {
 
   const fetchServices = async () => {
     try {
-      const response = await api.get("/services.php");
+      const response = await api.get("/api/services");
       if (response.data.status === "success") {
         setServices(response.data.services);
         setFilteredServices(response.data.services);
@@ -79,7 +79,7 @@ const ServicesScreen = () => {
       const storedUser = await AsyncStorage.getItem("userData");
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        const response = await api.post("/services.php", {
+        const response = await api.post("/api/services", {
           user_id: user.id_usuario,
           service_id: selectedService.id_servicio,
           amount: parseFloat(amount),

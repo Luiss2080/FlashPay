@@ -26,7 +26,7 @@ const LoginScreen = () => {
     onSubmit: async (values) => {
       setLoading(true);
       try {
-        const response = await api.post("/login.php", values);
+        const response = await api.post("/auth/login", values);
         if (response.data.status === "success") {
           await AsyncStorage.setItem("userToken", response.data.token);
           await AsyncStorage.setItem(

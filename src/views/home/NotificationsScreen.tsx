@@ -22,7 +22,7 @@ const NotificationsScreen = () => {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         const response = await api.get(
-          `/notifications.php?user_id=${user.id_usuario}`,
+          `/api/notifications?user_id=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
           setNotifications(response.data.notifications);

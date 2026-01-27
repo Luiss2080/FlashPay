@@ -24,7 +24,7 @@ const TopUpScreen = () => {
       const storedUser = await AsyncStorage.getItem("userData");
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        const response = await api.post("/topup.php", {
+        const response = await api.post("/api/topup", {
           id_usuario: user.id_usuario,
           telefono: phone,
           operador: operator,

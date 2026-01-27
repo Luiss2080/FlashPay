@@ -32,7 +32,7 @@ const DashboardScreen = () => {
         setUserData(user);
 
         const response = await api.get(
-          `/home_data.php?id_usuario=${user.id_usuario}`,
+          `/api/home-data?id_usuario=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
           setUserData((prev: any) => ({

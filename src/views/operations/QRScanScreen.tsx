@@ -28,7 +28,7 @@ const QRScanScreen = () => {
     setScanned(true);
     try {
       // Consultar API para ver de quién es el QR
-      const response = await api.get(`/resolve_qr.php?code=${data}`);
+      const response = await api.get(`/api/resolve-qr?code=${data}`);
       if (response.data.status === "success") {
         const user = response.data.data;
         Alert.alert("Usuario Encontrado", `¿Transferir a ${user.nombre}?`, [

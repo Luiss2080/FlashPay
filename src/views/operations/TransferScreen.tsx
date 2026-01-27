@@ -48,7 +48,7 @@ const TransferScreen = () => {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         const response = await api.get(
-          `/contacts.php?user_id=${user.id_usuario}`,
+          `/api/contacts?user_id=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
           setContacts(response.data.contacts);
@@ -78,7 +78,7 @@ const TransferScreen = () => {
       if (!storedUser) return;
       const user = JSON.parse(storedUser);
 
-      const response = await api.post("/transfer.php", {
+      const response = await api.post("/api/transfer", {
         id_emisor: user.id_usuario,
         telefono: phone,
         monto: parseFloat(amount),
@@ -105,7 +105,7 @@ const TransferScreen = () => {
 
   const saveContactIfNeeded = async (userId: number, contactPhone: string) => {
     try {
-      await api.post("/contacts.php", {
+      await api.post("/api/contacts", {
         user_id: userId,
         contact_phone: contactPhone,
         alias: "Nuevo Contacto", // Backend defaults to name if empty, but we send something
