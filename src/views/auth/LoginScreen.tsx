@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, StyleSheet, Alert } from "react-native";
+import { View, StyleSheet, Alert, TouchableOpacity } from "react-native";
 import { TextInput, Button, Text, Title } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import { useFormik } from "formik";
@@ -20,10 +20,10 @@ const LoginScreen = () => {
   }, []);
 
   const checkOnboarding = async () => {
-      const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
-      if (!hasSeen) {
-          navigation.replace("Onboarding");
-      }
+    const hasSeen = await AsyncStorage.getItem("hasSeenOnboarding");
+    if (!hasSeen) {
+      navigation.replace("Onboarding");
+    }
   };
 
   const checkBiometrics = async () => {
@@ -48,11 +48,21 @@ const LoginScreen = () => {
         Alert.alert("Aviso", "Inicia sesión primero para habilitar biometría");
       }
     } else {
-        hapticFeedback.error();
+      hapticFeedback.error();
     }
   };
-  
-  // ... inside formik submit
+
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      password: "",
+    },
+    validationSchema: Yup.object({
+      email: Yup.string()
+        .email("Email inválido")
+        .required("El email es obligatorio"),
+      password: Yup.string().required("La contraseña es obligatoria"),
+    }),
     onSubmit: async (values) => {
       setLoading(true);
       hapticFeedback.light();
@@ -122,9 +132,16 @@ const LoginScreen = () => {
       )}
 
       <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-          <Text style={{textAlign: 'right', color: '#666', marginBottom: 20, marginTop: 5}}>
-              ¿Olvidaste tu contraseña?
-          </Text>
+        <Text
+          style={{
+            textAlign: "right",
+            color: "#666",
+            marginBottom: 20,
+            marginTop: 5,
+          }}
+        >
+          ¿Olvidaste tu contraseña?
+        </Text>
       </TouchableOpacity>
 
       <Button
