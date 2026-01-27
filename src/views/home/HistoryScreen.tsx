@@ -1,23 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { View, StyleSheet, FlatList, TouchableOpacity } from "react-native";
-import {
-  Text,
-  Searchbar,
-  Chip,
-  ActivityIndicator,
-  IconButton,
-} from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import api from "../../services/api";
-import { colors } from "../../utils/theme";
-import { Ionicons } from "@expo/vector-icons";
+import { Share, RefreshControl } from "react-native";
+import { Skeleton } from "../../components/common/Skeleton";
+import { hapticFeedback } from "../../utils/haptics";
 
 const HistoryScreen = () => {
   const navigation = useNavigation<any>();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false); // Add refreshing state
   const [filter, setFilter] = useState<"all" | "ingreso" | "egreso">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -30,19 +20,10 @@ const HistoryScreen = () => {
       const storedUser = await AsyncStorage.getItem("userData");
       if (storedUser) {
         const user = JSON.parse(storedUser);
-        // Using home-data for now as it returns transactions, but ideally we'd have a specific endpoint paging them.
-        // Let's use home-data for MVP or create a dedicated endpoint if needed.
-        // Actually, home-data limits to 5. Let's create a specific fetch if possible or just use what we have.
-        // Since we didn't create a 'history' endpoint in backend yet, let's reuse home-data and filter client side
-        // OR simply display the top 5 for now and note it.
-        // Better yet: Update backend homeController to accept a 'limit' param or new route.
-        // Let's assume /api/home-data gives us recent ones.
-
         const response = await api.get(
           `/api/home-data?id_usuario=${user.id_usuario}`,
         );
         if (response.data.status === "success") {
-          // Backend currently limits to 5. We might want to increase this limit in the backend controller later.
           setTransactions(response.data.data.transactions);
           setFilteredTransactions(response.data.data.transactions);
         }
@@ -50,29 +31,45 @@ const HistoryScreen = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      setLoading(false);
+      // Small delay for skeleton demo
+      setTimeout(() => {
+        setLoading(false);
+        setRefreshing(false);
+      }, 500);
     }
   };
 
-  useEffect(() => {
-    let filtered = transactions;
+  const onRefresh = () => {
+    hapticFeedback.light();
+    setRefreshing(true);
+    fetchHistory();
+  };
 
-    if (filter !== "all") {
-      filtered = filtered.filter((t) => t.direccion === filter);
+  const handleShare = async (item: any) => {
+    hapticFeedback.selection();
+    try {
+      const message = `
+🧾 *Constancia de Transferencia - FlashPay*
+
+👤 *Origen:* ${item.direccion === "egreso" ? "Tú" : item.otro_usuario_nombre}
+➡️ *Destino:* ${item.direccion === "egreso" ? item.otro_usuario_nombre : "Tú"}
+💰 *Monto:* S/ ${parseFloat(item.monto).toFixed(2)}
+📅 *Fecha:* ${new Date(item.fecha).toLocaleString()}
+🔖 *ID:* ${item.id_transaccion}
+
+¡Operación exitosa con FlashPay! 🚀
+      `.trim();
+
+      await Share.share({
+        message,
+        title: "Constancia FlashPay",
+      });
+    } catch (error) {
+      console.error(error);
     }
+  };
 
-    if (searchQuery) {
-      filtered = filtered.filter(
-        (t) =>
-          t.otro_usuario_nombre
-            ?.toLowerCase()
-            .includes(searchQuery.toLowerCase()) ||
-          t.tipo.toLowerCase().includes(searchQuery.toLowerCase()),
-      );
-    }
-
-    setFilteredTransactions(filtered);
-  }, [filter, searchQuery, transactions]);
+  // ... useEffect for filtering (keep existing)
 
   const renderItem = ({ item }: { item: any }) => (
     <View style={styles.transactionItem}>
@@ -99,22 +96,36 @@ const HistoryScreen = () => {
           {item.tipo} • {new Date(item.fecha).toLocaleDateString()}
         </Text>
       </View>
-      <Text
-        style={[
-          styles.txAmount,
-          {
-            color: item.direccion === "ingreso" ? colors.success : colors.error,
-          },
-        ]}
-      >
-        {item.direccion === "ingreso" ? "+" : "-"} S/{" "}
-        {parseFloat(item.monto).toFixed(2)}
-      </Text>
+      <View style={{ alignItems: "flex-end" }}>
+        <Text
+          style={[
+            styles.txAmount,
+            {
+              color:
+                item.direccion === "ingreso" ? colors.success : colors.error,
+            },
+          ]}
+        >
+          {item.direccion === "ingreso" ? "+" : "-"} S/{" "}
+          {parseFloat(item.monto).toFixed(2)}
+        </Text>
+        <TouchableOpacity
+          onPress={() => handleShare(item)}
+          style={{ marginTop: 5 }}
+        >
+          <Ionicons
+            name="share-social-outline"
+            size={18}
+            color={colors.primary}
+          />
+        </TouchableOpacity>
+      </View>
     </View>
   );
 
   return (
     <View style={styles.container}>
+      {/* ... header and filter container ... */}
       <View style={styles.header}>
         <Ionicons
           name="arrow-back"
@@ -137,7 +148,10 @@ const HistoryScreen = () => {
         <View style={styles.chipsRow}>
           <Chip
             selected={filter === "all"}
-            onPress={() => setFilter("all")}
+            onPress={() => {
+              hapticFeedback.selection();
+              setFilter("all");
+            }}
             style={styles.chip}
             showSelectedOverlay
           >
@@ -145,7 +159,10 @@ const HistoryScreen = () => {
           </Chip>
           <Chip
             selected={filter === "ingreso"}
-            onPress={() => setFilter("ingreso")}
+            onPress={() => {
+              hapticFeedback.selection();
+              setFilter("ingreso");
+            }}
             style={styles.chip}
             showSelectedOverlay
           >
@@ -153,7 +170,10 @@ const HistoryScreen = () => {
           </Chip>
           <Chip
             selected={filter === "egreso"}
-            onPress={() => setFilter("egreso")}
+            onPress={() => {
+              hapticFeedback.selection();
+              setFilter("egreso");
+            }}
             style={styles.chip}
             showSelectedOverlay
           >
@@ -162,14 +182,35 @@ const HistoryScreen = () => {
         </View>
       </View>
 
-      {loading ? (
-        <ActivityIndicator style={{ marginTop: 50 }} color={colors.primary} />
+      {loading && !refreshing ? (
+        <View style={{ padding: 20 }}>
+          {[1, 2, 3, 4, 5].map((i) => (
+            <View
+              key={i}
+              style={{
+                flexDirection: "row",
+                marginBottom: 15,
+                alignItems: "center",
+              }}
+            >
+              <Skeleton variant="circle" width={40} height={40} />
+              <View style={{ marginLeft: 15, flex: 1 }}>
+                <Skeleton width="60%" height={15} style={{ marginBottom: 5 }} />
+                <Skeleton width="40%" height={12} />
+              </View>
+              <Skeleton width={60} height={15} />
+            </View>
+          ))}
+        </View>
       ) : (
         <FlatList
           data={filteredTransactions}
           renderItem={renderItem}
           keyExtractor={(item) => item.id_transaccion.toString()}
           contentContainerStyle={styles.list}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
           ListEmptyComponent={
             <Text style={styles.empty}>No se encontraron movimientos.</Text>
           }

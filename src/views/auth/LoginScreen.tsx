@@ -6,6 +6,7 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { hapticFeedback } from "../../utils/haptics";
 import * as LocalAuthentication from "expo-local-authentication";
 
 const LoginScreen = () => {
@@ -22,40 +23,35 @@ const LoginScreen = () => {
     const enrolled = await LocalAuthentication.isEnrolledAsync();
     setHasBiometrics(compatible && enrolled);
   };
-
   const handleBiometricLogin = async () => {
+    hapticFeedback.light();
     const result = await LocalAuthentication.authenticateAsync({
       promptMessage: "Ingresa a FlashPay",
       fallbackLabel: "Usar contraseña",
     });
 
     if (result.success) {
+      hapticFeedback.success();
       const token = await AsyncStorage.getItem("userToken");
       if (token) {
         navigation.replace("Home");
       } else {
+        hapticFeedback.warning();
         Alert.alert("Aviso", "Inicia sesión primero para habilitar biometría");
       }
+    } else {
+        hapticFeedback.error();
     }
   };
-
-  const LoginSchema = Yup.object().shape({
-    email: Yup.string()
-      .email("Email inválido")
-      .required("El email es requerido"),
-    password: Yup.string()
-      .min(6, "Mínimo 6 caracteres")
-      .required("La contraseña es requerida"),
-  });
-
-  const formik = useFormik({
-    initialValues: { email: "", password: "" },
-    validationSchema: LoginSchema,
+  
+  // ... inside formik submit
     onSubmit: async (values) => {
       setLoading(true);
+      hapticFeedback.light();
       try {
         const response = await api.post("/auth/login", values);
         if (response.data.status === "success") {
+          hapticFeedback.success();
           await AsyncStorage.setItem("userToken", response.data.token);
           await AsyncStorage.setItem(
             "userData",
@@ -64,6 +60,7 @@ const LoginScreen = () => {
           Alert.alert("Éxito", "Bienvenido a FlashPay");
           navigation.replace("Home");
         } else {
+          hapticFeedback.error();
           Alert.alert(
             "Error",
             response.data.message || "Credenciales incorrectas",

@@ -14,10 +14,14 @@ import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
+import { Skeleton } from "../../components/common/Skeleton";
+import { hapticFeedback } from "../../utils/haptics";
+
 const DashboardScreen = () => {
   const navigation = useNavigation<any>();
   const [userData, setUserData] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
+  // ... (keep state)
   const [notifications, setNotifications] = useState<any[]>([]);
   const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -47,8 +51,11 @@ const DashboardScreen = () => {
     } catch (error) {
       console.error("Error fetching dashboard data:", error);
     } finally {
-      setLoading(false);
-      setRefreshing(false);
+      // Small delay to show smooth loading
+      setTimeout(() => {
+        setLoading(false);
+        setRefreshing(false);
+      }, 500);
     }
   };
 
@@ -57,11 +64,74 @@ const DashboardScreen = () => {
   }, []);
 
   const onRefresh = () => {
+    hapticFeedback.light();
     setRefreshing(true);
     fetchDashboardData();
   };
 
+  const toggleBalance = () => {
+    hapticFeedback.selection();
+    setShowBalance(!showBalance);
+  };
+
   const promos = notifications.filter((n) => n.tipo === "promo");
+
+  if (loading && !refreshing) {
+    return (
+      <View style={styles.container}>
+        <View style={[styles.header, { height: 280 }]}>
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              marginBottom: 20,
+            }}
+          >
+            <Skeleton variant="circle" width={40} height={40} />
+            <Skeleton width={150} height={20} style={{ marginLeft: 10 }} />
+          </View>
+          <View style={{ alignItems: "center", marginTop: 10 }}>
+            <Skeleton width={100} height={14} style={{ marginBottom: 10 }} />
+            <Skeleton width={180} height={40} />
+          </View>
+        </View>
+        <View style={[styles.actionsCard, { marginTop: -60 }]}>
+          <Skeleton width={60} height={60} variant="circle" />
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-around",
+              marginLeft: 15,
+            }}
+          >
+            <Skeleton width={50} height={50} style={{ borderRadius: 12 }} />
+            <Skeleton width={50} height={50} style={{ borderRadius: 12 }} />
+            <Skeleton width={50} height={50} style={{ borderRadius: 12 }} />
+          </View>
+        </View>
+        <View style={{ padding: 20 }}>
+          <Skeleton width={200} height={20} style={{ marginBottom: 15 }} />
+          <View style={{ flexDirection: "row" }}>
+            <Skeleton width={60} height={80} style={{ marginRight: 10 }} />
+            <Skeleton width={60} height={80} style={{ marginRight: 10 }} />
+            <Skeleton width={60} height={80} />
+          </View>
+          <Skeleton
+            width={200}
+            height={20}
+            style={{ marginTop: 30, marginBottom: 15 }}
+          />
+          <Skeleton
+            width="100%"
+            height={70}
+            style={{ marginBottom: 10, borderRadius: 12 }}
+          />
+          <Skeleton width="100%" height={70} style={{ borderRadius: 12 }} />
+        </View>
+      </View>
+    );
+  }
 
   return (
     <View style={styles.container}>
@@ -99,10 +169,7 @@ const DashboardScreen = () => {
 
         <View style={styles.balanceContainer}>
           <Text style={styles.balanceLabel}>Saldo disponible</Text>
-          <TouchableOpacity
-            style={styles.balanceRow}
-            onPress={() => setShowBalance(!showBalance)}
-          >
+          <TouchableOpacity style={styles.balanceRow} onPress={toggleBalance}>
             <Text style={styles.currencySymbol}>S/ </Text>
             <Text style={styles.balanceAmount}>
               {showBalance
