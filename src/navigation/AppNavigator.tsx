@@ -5,7 +5,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
 import LoginScreen from "../views/auth/LoginScreen";
 import DashboardScreen from "../views/home/DashboardScreen";
-import { ProfileScreen, QRScanScreen } from "../views/operations/Placeholders";
+import ProfileScreen from "../views/profile/ProfileScreen";
+import QRScanScreen from "../views/operations/QRScanScreen";
 import TransferScreen from "../views/operations/TransferScreen";
 import { colors } from "../utils/theme";
 
