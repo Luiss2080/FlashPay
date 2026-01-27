@@ -17,7 +17,9 @@ import { getAvatarColor, getInitials } from "../../utils/avatarUtils";
 import { Skeleton } from "../../components/common/Skeleton";
 import { hapticFeedback } from "../../utils/haptics";
 
-const DashboardScreen = () => {
+const PantallaInicio = () => {
+  // ...
+  export default PantallaInicio;
   const navigation = useNavigation<any>();
   const [userData, setUserData] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);

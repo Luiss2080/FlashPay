@@ -44,7 +44,9 @@ const slides = [
   },
 ];
 
-const OnboardingScreen = () => {
+const PantallaBienvenida = () => {
+  // ...
+  export default PantallaBienvenida;
   const navigation = useNavigation<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;

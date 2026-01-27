@@ -9,7 +9,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { hapticFeedback } from "../../utils/haptics";
 import * as LocalAuthentication from "expo-local-authentication";
 
-const LoginScreen = () => {
+const PantallaLogin = () => {
+  // ... (content implied, just changing declaration line)
+  // ...
+  export default PantallaLogin;
   const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(false);
   const [hasBiometrics, setHasBiometrics] = useState(false);

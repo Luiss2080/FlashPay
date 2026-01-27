@@ -22,7 +22,9 @@ import { Ionicons } from "@expo/vector-icons";
 import { Skeleton } from "../../components/common/Skeleton";
 import { hapticFeedback } from "../../utils/haptics";
 
-const HistoryScreen = () => {
+const PantallaHistorial = () => {
+  // ...
+  export default PantallaHistorial;
   const navigation = useNavigation<any>();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);

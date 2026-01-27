@@ -7,7 +7,9 @@ import { Ionicons } from "@expo/vector-icons";
 import * as Print from "expo-print";
 import * as Sharing from "expo-sharing";
 
-const TransactionDetailScreen = () => {
+const PantallaDetalleTransaccion = () => {
+  // ...
+  export default PantallaDetalleTransaccion;
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const { transaction } = route.params || {};

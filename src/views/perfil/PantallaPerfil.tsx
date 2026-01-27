@@ -14,7 +14,9 @@ import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import * as LocalAuthentication from "expo-local-authentication";
 
-const ProfileScreen = () => {
+const PantallaPerfil = () => {
+  // ...
+  export default PantallaPerfil;
   const navigation = useNavigation<any>();
   const [user, setUser] = useState<any>(null);
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);

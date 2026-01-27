@@ -5,7 +5,9 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
-const ForgotPasswordScreen = () => {
+const PantallaRecuperarClave = () => {
+  // ...
+  export default PantallaRecuperarClave;
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
