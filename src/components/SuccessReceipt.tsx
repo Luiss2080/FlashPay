@@ -1,9 +1,10 @@
-import React from "react";
-import { View, StyleSheet, Modal, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, StyleSheet, Modal, Share, Alert } from "react-native";
 import { Text, Button, Surface } from "react-native-paper";
 import { colors } from "../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import * as Print from "expo-print";
+import * as Sharing from "expo-sharing";
 
 interface SuccessReceiptProps {
   visible: boolean;
@@ -11,6 +12,8 @@ interface SuccessReceiptProps {
   amount: string;
   receiver: string;
   message?: string;
+  transactionId?: string; // Optional ID for credibility
+  date?: string;
 }
 
 const SuccessReceipt = ({
@@ -19,9 +22,75 @@ const SuccessReceipt = ({
   amount,
   receiver,
   message,
+  transactionId = "TX-" + Math.floor(Math.random() * 1000000),
+  date = new Date().toLocaleString(),
 }: SuccessReceiptProps) => {
+  const [sharing, setSharing] = useState(false);
+
+  const generateAndSharePDF = async () => {
+    setSharing(true);
+    try {
+      const html = `
+        <html>
+          <head>
+            <style>
+              body { font-family: 'Helvetica', sans-serif; padding: 40px; color: #333; }
+              .header { text-align: center; margin-bottom: 30px; }
+              .logo { font-size: 30px; font-weight: bold; color: ${colors.primary}; margin-bottom: 10px; }
+              .success { color: ${colors.success}; font-size: 18px; font-weight: bold; }
+              .amount-box { background: #f5f5f5; padding: 20px; border-radius: 10px; text-align: center; margin: 20px 0; }
+              .amount { font-size: 40px; font-weight: bold; color: ${colors.primary}; }
+              .label { color: #888; font-size: 14px; margin-bottom: 5px; }
+              .value { font-size: 18px; margin-bottom: 15px; font-weight: 500; }
+              .footer { margin-top: 50px; text-align: center; border-top: 1px solid #eee; padding-top: 20px; font-size: 12px; color: #aaa; }
+            </style>
+          </head>
+          <body>
+            <div class="header">
+              <div class="logo">FlashPay</div>
+              <div class="success">¡Transferencia Exitosa!</div>
+            </div>
+            
+            <div class="amount-box">
+              <div class="label">Monto Enviado</div>
+              <div class="amount">S/ ${parseFloat(amount).toFixed(2)}</div>
+            </div>
+
+            <div class="details">
+              <div class="label">Destinatario</div>
+              <div class="value">${receiver}</div>
+
+              <div class="label">Fecha y Hora</div>
+              <div class="value">${date}</div>
+
+              <div class="label">Nro. Operación</div>
+              <div class="value">${transactionId}</div>
+              
+              ${message ? `<div class="label">Mensaje</div><div class="value">${message}</div>` : ""}
+            </div>
+
+            <div class="footer">
+              Este comprobante es válido para confirmar la operación realizada a través de FlashPay.
+            </div>
+          </body>
+        </html>
+      `;
+
+      const { uri } = await Print.printToFileAsync({ html });
+      await Sharing.shareAsync(uri, {
+        UTI: ".pdf",
+        mimeType: "application/pdf",
+      });
+    } catch (error) {
+      Alert.alert("Error", "No se pudo generar el comprobante");
+      console.error(error);
+    } finally {
+      setSharing(false);
+    }
+  };
+
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal visible={visible} transparent animationType="fade">
       <View style={styles.container}>
         <Surface style={styles.card}>
           <View style={styles.iconContainer}>
@@ -41,7 +110,19 @@ const SuccessReceipt = ({
           <Text style={styles.receiverLabel}>Enviado a:</Text>
           <Text style={styles.receiverName}>{receiver}</Text>
 
-          {message && <Text style={styles.message}>"{message}"</Text>}
+          <Button
+            mode="outlined"
+            onPress={generateAndSharePDF}
+            loading={sharing}
+            icon="share-variant"
+            style={[
+              styles.button,
+              { marginBottom: 10, borderColor: colors.secondary },
+            ]}
+            textColor={colors.secondary}
+          >
+            Compartir Comprobante
+          </Button>
 
           <Button mode="contained" onPress={onClose} style={styles.button}>
             Volver al Inicio
@@ -55,7 +136,7 @@ const SuccessReceipt = ({
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "rgba(0,0,0,0.5)",
+    backgroundColor: "rgba(0,0,0,0.6)",
     justifyContent: "center",
     padding: 20,
   },
@@ -64,13 +145,13 @@ const styles = StyleSheet.create({
     borderRadius: 20,
     padding: 30,
     alignItems: "center",
-    elevation: 5,
+    elevation: 8,
   },
   iconContainer: {
-    marginBottom: 20,
+    marginBottom: 10,
   },
   title: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: "bold",
     color: colors.primary,
     marginBottom: 20,
@@ -94,24 +175,19 @@ const styles = StyleSheet.create({
   },
   receiverLabel: {
     color: "#888",
-    marginTop: 20,
+    marginTop: 10,
     fontSize: 14,
   },
   receiverName: {
-    fontSize: 20,
-    fontWeight: "bold",
+    fontSize: 18,
+    fontWeight: "600",
     color: colors.text,
-    marginBottom: 20,
-  },
-  message: {
-    fontStyle: "italic",
-    color: "#666",
     marginBottom: 30,
   },
   button: {
     width: "100%",
-    backgroundColor: colors.secondary,
     paddingVertical: 5,
+    backgroundColor: colors.secondary,
   },
 });
 
