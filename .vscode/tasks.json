@@ -1,0 +1,22 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Run FlashPay",
+      "type": "shell",
+      "windows": {
+        "command": "start http://localhost/FlashPay/api/test.php; npm start"
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": [],
+      "detail": "Abre el backend en el navegador y ejecuta Expo (Scan QR)."
+    }
+  ]
+}
