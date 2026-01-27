@@ -3,11 +3,15 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { Ionicons } from "@expo/vector-icons";
+
 import LoginScreen from "../views/auth/LoginScreen";
 import DashboardScreen from "../views/home/DashboardScreen";
 import ProfileScreen from "../views/profile/ProfileScreen";
 import QRScanScreen from "../views/operations/QRScanScreen";
 import TransferScreen from "../views/operations/TransferScreen";
+import ServicesScreen from "../views/operations/ServicesScreen";
+import TopUpScreen from "../views/operations/TopUpScreen"; // Asegúrate que el archivo exista
+import PromosScreen from "../views/promos/PromosScreen";
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -22,29 +26,25 @@ const MainTabNavigator = () => {
         tabBarInactiveTintColor: "gray",
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-
-          if (route.name === "Dashboard") {
+          if (route.name === "Inicio")
             iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "QR") {
+          else if (route.name === "QR")
             iconName = focused ? "qr-code" : "qr-code-outline";
-          } else if (route.name === "Perfil") {
+          else if (route.name === "Promos")
+            iconName = focused ? "gift" : "gift-outline";
+          else if (route.name === "Perfil")
             iconName = focused ? "person" : "person-outline";
-          }
-
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
       })}
     >
-      <Tab.Screen
-        name="Dashboard"
-        component={DashboardScreen}
-        options={{ title: "Inicio" }}
-      />
+      <Tab.Screen name="Inicio" component={DashboardScreen} />
       <Tab.Screen
         name="QR"
         component={QRScanScreen}
         options={{ title: "Escanear" }}
       />
+      <Tab.Screen name="Promos" component={PromosScreen} />
       <Tab.Screen name="Perfil" component={ProfileScreen} />
     </Tab.Navigator>
   );
@@ -65,16 +65,26 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
 
-        {/* Pantallas secundarias fuera del Tab (stack) */}
+        {/* Pantallas de Operaciones (Fuera del Tab) */}
         <Stack.Screen
           name="Transfer"
           component={TransferScreen}
-          options={{ title: "Transferir", headerTintColor: colors.primary }}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Services"
+          component={ServicesScreen}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="TopUp"
+          component={TopUpScreen}
+          options={{ headerShown: false }}
         />
         <Stack.Screen
           name="QRScan"
           component={QRScanScreen}
-          options={{ title: "Escanear QR", headerTintColor: colors.primary }}
+          options={{ headerShown: false }}
         />
       </Stack.Navigator>
     </NavigationContainer>
