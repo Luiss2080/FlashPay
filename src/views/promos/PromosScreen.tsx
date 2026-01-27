@@ -18,7 +18,7 @@ const PromosScreen = () => {
   useEffect(() => {
     const fetchPromos = async () => {
       try {
-        const response = await api.get("/promos.php");
+        const response = await api.get("/api/promos");
         if (response.data.status === "success") {
           setPromos(response.data.data);
         }
