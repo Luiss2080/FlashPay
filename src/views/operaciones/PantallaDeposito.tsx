@@ -7,7 +7,7 @@ import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
-const DepositScreen = () => {
+const PantallaDeposito = () => {
   const navigation = useNavigation<any>();
   const [amount, setAmount] = useState("");
   const [method, setMethod] = useState("card");
@@ -285,4 +285,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DepositScreen;
+export default PantallaDeposito;

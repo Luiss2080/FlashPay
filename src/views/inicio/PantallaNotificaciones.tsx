@@ -7,7 +7,7 @@ import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
-const NotificationsScreen = () => {
+const PantallaNotificaciones = () => {
   const navigation = useNavigation<any>();
   const [notifications, setNotifications] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NotificationsScreen;
+export default PantallaNotificaciones;

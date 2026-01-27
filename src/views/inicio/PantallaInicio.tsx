@@ -19,7 +19,6 @@ import { hapticFeedback } from "../../utils/haptics";
 
 const PantallaInicio = () => {
   // ...
-  export default PantallaInicio;
   const navigation = useNavigation<any>();
   const [userData, setUserData] = useState<any>(null);
   const [transactions, setTransactions] = useState<any[]>([]);
@@ -611,4 +610,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default DashboardScreen;
+export default PantallaInicio;

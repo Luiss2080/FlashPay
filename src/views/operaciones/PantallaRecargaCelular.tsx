@@ -7,7 +7,7 @@ import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 
-const TopUpScreen = () => {
+const PantallaRecargaCelular = () => {
   const navigation = useNavigation<any>();
   const [phone, setPhone] = useState("");
   const [amount, setAmount] = useState("");
@@ -178,4 +178,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TopUpScreen;
+export default PantallaRecargaCelular;

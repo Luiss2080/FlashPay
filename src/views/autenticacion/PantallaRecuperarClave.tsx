@@ -7,7 +7,6 @@ import { Ionicons } from "@expo/vector-icons";
 
 const PantallaRecuperarClave = () => {
   // ...
-  export default PantallaRecuperarClave;
   const navigation = useNavigation<any>();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
@@ -103,4 +102,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ForgotPasswordScreen;
+export default PantallaRecuperarClave;

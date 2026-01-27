@@ -5,7 +5,7 @@ import { useNavigation } from "@react-navigation/native";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
-const SupportTicketScreen = () => {
+const PantallaTicketSoporte = () => {
   const navigation = useNavigation<any>();
   const [subject, setSubject] = useState("");
   const [message, setMessage] = useState("");
@@ -130,4 +130,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SupportTicketScreen;
+export default PantallaTicketSoporte;

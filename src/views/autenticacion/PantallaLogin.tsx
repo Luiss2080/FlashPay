@@ -12,7 +12,6 @@ import * as LocalAuthentication from "expo-local-authentication";
 const PantallaLogin = () => {
   // ... (content implied, just changing declaration line)
   // ...
-  export default PantallaLogin;
   const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(false);
   const [hasBiometrics, setHasBiometrics] = useState(false);
@@ -211,4 +210,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default LoginScreen;
+export default PantallaLogin;

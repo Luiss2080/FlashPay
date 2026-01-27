@@ -9,7 +9,7 @@ import QRCode from "react-native-qrcode-svg";
 import { hapticFeedback } from "../../utils/haptics";
 import { getAvatarColor, getInitials } from "../../utils/avatarUtils";
 
-const ReceiveMoneyScreen = () => {
+const PantallaCobrar = () => {
   const navigation = useNavigation<any>();
   const [user, setUser] = useState<any>(null);
 
@@ -168,4 +168,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ReceiveMoneyScreen;
+export default PantallaCobrar;

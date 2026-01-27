@@ -16,7 +16,6 @@ import * as LocalAuthentication from "expo-local-authentication";
 
 const PantallaPerfil = () => {
   // ...
-  export default PantallaPerfil;
   const navigation = useNavigation<any>();
   const [user, setUser] = useState<any>(null);
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);
@@ -244,4 +243,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileScreen;
+export default PantallaPerfil;

@@ -21,7 +21,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { getAvatarColor, getInitials } from "../../utils/avatarUtils";
 import { hapticFeedback } from "../../utils/haptics";
 
-const FavoritesScreen = () => {
+const PantallaFavoritos = () => {
   const navigation = useNavigation<any>();
   const [contacts, setContacts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -186,4 +186,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default FavoritesScreen;
+export default PantallaFavoritos;

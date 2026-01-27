@@ -24,7 +24,6 @@ import { hapticFeedback } from "../../utils/haptics";
 
 const PantallaHistorial = () => {
   // ...
-  export default PantallaHistorial;
   const navigation = useNavigation<any>();
   const [transactions, setTransactions] = useState<any[]>([]);
   const [filteredTransactions, setFilteredTransactions] = useState<any[]>([]);
@@ -337,4 +336,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HistoryScreen;
+export default PantallaHistorial;

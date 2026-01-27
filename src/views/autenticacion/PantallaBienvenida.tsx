@@ -46,7 +46,6 @@ const slides = [
 
 const PantallaBienvenida = () => {
   // ...
-  export default PantallaBienvenida;
   const navigation = useNavigation<any>();
   const [currentIndex, setCurrentIndex] = useState(0);
   const scrollX = useRef(new Animated.Value(0)).current;
@@ -189,4 +188,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default OnboardingScreen;
+export default PantallaBienvenida;

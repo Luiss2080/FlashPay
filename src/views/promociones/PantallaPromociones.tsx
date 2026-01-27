@@ -11,7 +11,7 @@ import {
 import api from "../../services/api";
 import { colors } from "../../utils/theme";
 
-const PromosScreen = () => {
+const PantallaPromociones = () => {
   const [promos, setPromos] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -98,4 +98,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default PromosScreen;
+export default PantallaPromociones;

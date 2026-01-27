@@ -22,7 +22,7 @@ import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import SuccessReceipt from "../../components/SuccessReceipt";
 
-const TransferScreen = () => {
+const PantallaTransferencia = () => {
   const navigation = useNavigation<any>();
   const route = useRoute<any>();
   const [phone, setPhone] = useState("");
@@ -343,4 +343,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TransferScreen;
+export default PantallaTransferencia;

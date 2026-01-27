@@ -11,7 +11,7 @@ import { CameraView, Camera } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../services/api";
 
-const QRScanScreen = () => {
+const PantallaEscanearQR = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const navigation = useNavigation<any>();
@@ -135,4 +135,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default QRScanScreen;
+export default PantallaEscanearQR;

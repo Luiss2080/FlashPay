@@ -25,7 +25,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Ionicons } from "@expo/vector-icons";
 import { Skeleton } from "../../components/common/Skeleton";
 
-const ServicesScreen = () => {
+const PantallaServicios = () => {
   const navigation = useNavigation<any>();
   const [services, setServices] = useState<any[]>([]);
   const [filteredServices, setFilteredServices] = useState<any[]>([]);
@@ -398,4 +398,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ServicesScreen;
+export default PantallaServicios;
