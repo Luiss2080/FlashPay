@@ -25,10 +25,12 @@ const SecuritySettingsScreen = () => {
 
   const [biometricsEnabled, setBiometricsEnabled] = useState(false);
   const [hasBiometrics, setHasBiometrics] = useState(false);
+  const [limit, setLimit] = useState("500");
 
   useEffect(() => {
     loadUser();
     checkBiometrics();
+    loadLimits();
   }, []);
 
   const loadUser = async () => {
@@ -39,6 +41,17 @@ const SecuritySettingsScreen = () => {
     }
     const bio = await AsyncStorage.getItem("biometricsEnabled");
     setBiometricsEnabled(bio === "true");
+  };
+
+  const loadLimits = async () => {
+    try {
+      const response = await api.get("/api/user/limits");
+      if (response.data.status === "success") {
+        setLimit(response.data.limits.daily_transfer.toString());
+      }
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const checkBiometrics = async () => {
@@ -93,6 +106,12 @@ const SecuritySettingsScreen = () => {
     }
   };
 
+  const updateLimit = async () => {
+    // Mock update
+    Alert.alert("Límites", "Límite actualizado correctamente (Simulado).");
+    // In real app: await api.post("/api/user/limits", { limit });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -137,23 +156,27 @@ const SecuritySettingsScreen = () => {
 
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>Límites de Transacción</Text>
-          <List.Item
-            title="Límite Diario"
-            description="Máximo por día: S/ 500.00"
-            left={(props) => (
-              <List.Icon
-                {...props}
-                icon="cash-multiple"
-                color={colors.primary}
+          <View style={{ paddingHorizontal: 15, paddingBottom: 15 }}>
+            <Text style={{ marginBottom: 10, color: "#555" }}>
+              Límite Diario (S/)
+            </Text>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <TextInput
+                value={limit}
+                onChangeText={setLimit}
+                mode="outlined"
+                style={{ flex: 1, backgroundColor: "white", height: 40 }}
+                keyboardType="numeric"
               />
-            )}
-            onPress={() =>
-              Alert.alert(
-                "Límites",
-                "Para aumentar tus límites, contacta a soporte.",
-              )
-            }
-          />
+              <Button
+                mode="contained"
+                style={{ marginLeft: 10, backgroundColor: colors.secondary }}
+                onPress={updateLimit}
+              >
+                Guardar
+              </Button>
+            </View>
+          </View>
         </View>
 
         <Divider style={{ marginVertical: 20 }} />

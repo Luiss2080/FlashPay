@@ -139,6 +139,11 @@ const AppNavigator = () => {
           component={FavoritesScreen}
           options={{ headerShown: false }}
         />
+        <Stack.Screen
+          name="Terms"
+          component={TermsScreen}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
