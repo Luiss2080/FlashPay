@@ -12,7 +12,7 @@ import TransferScreen from "../views/operations/TransferScreen";
 import ServicesScreen from "../views/operations/ServicesScreen";
 import TopUpScreen from "../views/operations/TopUpScreen";
 import PromosScreen from "../views/promos/PromosScreen";
-import HistoryScreen from "../views/history/HistoryScreen";
+import HistoryScreen from "../views/home/HistoryScreen";
 import HelpScreen from "../views/profile/HelpScreen";
 import { colors } from "../utils/theme";
 

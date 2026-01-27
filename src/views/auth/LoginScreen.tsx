@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, StyleSheet, Alert } from "react-native";
 import { TextInput, Button, Text, Title } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
@@ -6,10 +6,38 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as LocalAuthentication from "expo-local-authentication";
 
 const LoginScreen = () => {
   const navigation = useNavigation<any>();
   const [loading, setLoading] = useState(false);
+  const [hasBiometrics, setHasBiometrics] = useState(false);
+
+  useEffect(() => {
+    checkBiometrics();
+  }, []);
+
+  const checkBiometrics = async () => {
+    const compatible = await LocalAuthentication.hasHardwareAsync();
+    const enrolled = await LocalAuthentication.isEnrolledAsync();
+    setHasBiometrics(compatible && enrolled);
+  };
+
+  const handleBiometricLogin = async () => {
+    const result = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Ingresa a FlashPay",
+      fallbackLabel: "Usar contraseña",
+    });
+
+    if (result.success) {
+      const token = await AsyncStorage.getItem("userToken");
+      if (token) {
+        navigation.replace("Home");
+      } else {
+        Alert.alert("Aviso", "Inicia sesión primero para habilitar biometría");
+      }
+    }
+  };
 
   const LoginSchema = Yup.object().shape({
     email: Yup.string()
@@ -32,9 +60,9 @@ const LoginScreen = () => {
           await AsyncStorage.setItem(
             "userData",
             JSON.stringify(response.data.user),
-          ); // Guardar datos de usuario
+          );
           Alert.alert("Éxito", "Bienvenido a FlashPay");
-          navigation.replace("Home"); // Ir al Home y no poder volver atrás con back
+          navigation.replace("Home");
         } else {
           Alert.alert(
             "Error",
@@ -97,6 +125,17 @@ const LoginScreen = () => {
       >
         Ingresar
       </Button>
+
+      {hasBiometrics && (
+        <Button
+          icon="fingerprint"
+          mode="outlined"
+          onPress={handleBiometricLogin}
+          style={{ marginTop: 10, borderColor: "#6200ee" }}
+        >
+          Ingresar con Huella/FaceID
+        </Button>
+      )}
 
       <Button
         mode="text"
