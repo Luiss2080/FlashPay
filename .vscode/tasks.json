@@ -2,10 +2,11 @@
   "version": "2.0.0",
   "tasks": [
     {
-      "label": "Setup Backend (DB & Migrations)",
+      "label": "Start Backend (Node.js)",
       "type": "shell",
-      "windows": {
-        "command": "php api/setup.php"
+      "command": "npm run dev",
+      "options": {
+        "cwd": "${workspaceFolder}/backend"
       },
       "presentation": {
         "reveal": "always",
@@ -13,13 +14,13 @@
         "group": "build"
       },
       "problemMatcher": [],
-      "detail": "Crea BD, Tablas y Datos automáticamente."
+      "detail": "Inicia el servidor Node.js en el puerto 3001."
     },
     {
       "label": "Launch Frontend (Expo)",
       "type": "shell",
       "windows": {
-        "command": "npm start"
+        "command": "npx expo start"
       },
       "presentation": {
         "reveal": "always",
@@ -29,10 +30,7 @@
     },
     {
       "label": "Run FlashPay Project",
-      "dependsOn": [
-        "Setup Backend (DB & Migrations)",
-        "Launch Frontend (Expo)"
-      ],
+      "dependsOn": ["Start Backend (Node.js)", "Launch Frontend (Expo)"],
       "group": {
         "kind": "build",
         "isDefault": true
