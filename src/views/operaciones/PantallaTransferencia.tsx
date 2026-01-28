@@ -6,6 +6,8 @@ import {
   TouchableOpacity,
   ScrollView,
   Modal,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 import {
   Text,
@@ -138,56 +140,62 @@ const PantallaTransferencia = () => {
         <View style={{ width: 24 }} />
       </View>
 
-      <View style={styles.content}>
-        <Text style={styles.label}>Número de celular</Text>
-        <View style={styles.phoneInputContainer}>
-          <TextInput
-            mode="outlined"
-            placeholder="Ej. 987654321"
-            keyboardType="phone-pad"
-            value={phone}
-            onChangeText={setPhone}
-            style={[styles.input, { flex: 1 }]}
-          />
-          <IconButton
-            icon="account-box-outline"
-            size={30}
-            iconColor={colors.secondary}
-            onPress={handleOpenContacts}
-            style={{ marginBottom: 20 }}
-          />
-        </View>
+      <KeyboardAvoidingView
+        style={{ flex: 1 }}
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
+      >
+        <ScrollView contentContainerStyle={styles.content}>
+          <Text style={styles.label}>Número de celular</Text>
+          <View style={styles.phoneInputContainer}>
+            <TextInput
+              mode="outlined"
+              placeholder="Ej. 987654321"
+              keyboardType="phone-pad"
+              value={phone}
+              onChangeText={setPhone}
+              style={[styles.input, { flex: 1 }]}
+            />
+            <IconButton
+              icon="account-box-outline"
+              size={30}
+              iconColor={colors.secondary}
+              onPress={handleOpenContacts}
+              style={{ marginBottom: 20 }}
+            />
+          </View>
 
-        <Text style={styles.label}>Monto a enviar</Text>
-        <View style={styles.amountContainer}>
-          <Text style={styles.currency}>S/</Text>
-          <TextInput
-            mode="flat"
-            placeholder="0.00"
-            keyboardType="numeric"
-            value={amount}
-            onChangeText={setAmount}
-            style={styles.amountInput}
-            contentStyle={{
-              fontSize: 30,
-              fontWeight: "bold",
-              color: colors.primary,
-            }}
-            underlineColor="transparent"
-          />
-        </View>
+          <Text style={styles.label}>Monto a enviar</Text>
+          <View style={styles.amountContainer}>
+            <Text style={styles.currency}>S/</Text>
+            <TextInput
+              mode="flat"
+              placeholder="0.00"
+              keyboardType="numeric"
+              value={amount}
+              onChangeText={setAmount}
+              style={styles.amountInput}
+              contentStyle={{
+                fontSize: 30,
+                fontWeight: "bold",
+                color: colors.primary,
+              }}
+              underlineColor="transparent"
+            />
+          </View>
 
-        <Button
-          mode="contained"
-          onPress={handleTransfer}
-          loading={loading}
-          disabled={loading || !phone || !amount}
-          style={styles.button}
-          contentStyle={{ paddingVertical: 8 }}
-        >
-          Yapear
-        </Button>
-      </View>
+          <Button
+            mode="contained"
+            onPress={handleTransfer}
+            loading={loading}
+            disabled={loading || !phone || !amount}
+            style={styles.button}
+            contentStyle={{ paddingVertical: 8 }}
+          >
+            Yapear
+          </Button>
+        </ScrollView>
+      </KeyboardAvoidingView>
 
       {/* Contacts Modal */}
       <Modal
@@ -305,9 +313,10 @@ const styles = StyleSheet.create({
     backgroundColor: "transparent",
   },
   button: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.accent,
     borderRadius: 25,
     elevation: 4,
+    marginTop: 20,
   },
   modalContainer: {
     flex: 1,
