@@ -353,7 +353,7 @@ const styles = StyleSheet.create({
   serviceName: {
     fontSize: 16,
     fontWeight: "bold",
-    color: colors.text,
+    color: colors.textDark,
   },
   serviceCategory: {
     fontSize: 10,
@@ -378,7 +378,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: "bold",
     marginLeft: 15,
-    color: colors.text,
+    color: colors.textDark,
   },
   label: {
     fontSize: 14,

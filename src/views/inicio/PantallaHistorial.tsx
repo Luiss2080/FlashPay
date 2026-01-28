@@ -318,7 +318,7 @@ const styles = StyleSheet.create({
   txName: {
     fontWeight: "bold",
     fontSize: 15,
-    color: colors.text,
+    color: colors.textDark,
   },
   txDate: {
     fontSize: 12,
@@ -332,7 +332,7 @@ const styles = StyleSheet.create({
   empty: {
     textAlign: "center",
     marginTop: 50,
-    color: "#888",
+    color: "#ccc",
   },
 });
 
