@@ -7,7 +7,7 @@ import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 
-const ProfileEditScreen = () => {
+const PantallaEditarPerfil = () => {
   const navigation = useNavigation<any>();
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -153,4 +153,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProfileEditScreen;
+export default PantallaEditarPerfil;

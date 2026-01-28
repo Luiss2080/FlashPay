@@ -6,7 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 
 import { useNavigation } from "@react-navigation/native";
 
-const HelpScreen = () => {
+const PantallaAyuda = () => {
   const navigation = useNavigation<any>();
   return (
     <View style={styles.container}>
@@ -92,4 +92,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HelpScreen;
+export default PantallaAyuda;

@@ -15,7 +15,7 @@ import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import * as LocalAuthentication from "expo-local-authentication";
 
-const SecuritySettingsScreen = () => {
+const PantallaSeguridad = () => {
   const navigation = useNavigation<any>();
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
@@ -269,4 +269,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SecuritySettingsScreen;
+export default PantallaSeguridad;

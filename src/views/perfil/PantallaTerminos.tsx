@@ -5,7 +5,7 @@ import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 
-const TermsScreen = () => {
+const PantallaTerminos = () => {
   const navigation = useNavigation<any>();
 
   return (
@@ -103,4 +103,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TermsScreen;
+export default PantallaTerminos;
