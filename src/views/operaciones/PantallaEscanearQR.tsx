@@ -11,6 +11,8 @@ import { CameraView, Camera } from "expo-camera";
 import { useNavigation } from "@react-navigation/native";
 import api from "../../services/api";
 
+const { width } = Dimensions.get("window");
+
 const PantallaEscanearQR = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
@@ -120,8 +122,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   scanBox: {
-    width: 250,
-    height: 250,
+    width: width * 0.7,
+    height: width * 0.7,
     borderWidth: 2,
     borderColor: "#fff",
     backgroundColor: "transparent",
@@ -134,5 +136,3 @@ const styles = StyleSheet.create({
     borderRadius: 5,
   },
 });
-
-export default PantallaEscanearQR;

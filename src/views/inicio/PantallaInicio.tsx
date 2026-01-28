@@ -6,7 +6,9 @@ import {
   TouchableOpacity,
   RefreshControl,
   Image,
+  Dimensions,
 } from "react-native";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, Button, Card, Avatar, IconButton } from "react-native-paper";
 import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -96,8 +98,8 @@ const PantallaInicio = () => {
             <Skeleton width={180} height={40} />
           </View>
         </View>
-        <View style={[styles.actionsCard, { marginTop: -60 }]}>
-          <Skeleton width={60} height={60} variant="circle" />
+        <View style={[styles.actionsContainer, { marginTop: -60 }]}>
+          <Skeleton width={80} height={80} variant="circle" />
           <View
             style={{
               flex: 1,
@@ -134,12 +136,14 @@ const PantallaInicio = () => {
     );
   }
 
+  const insets = useSafeAreaInsets();
+
   return (
     <View style={styles.container}>
       {/* Header Gradient Style */}
-      <View style={styles.header}>
+      <View style={[styles.header, { paddingTop: insets.top + 20 }]}>
         <View style={styles.headerTop}>
-          <TouchableOpacity onPress={() => navigation.navigate("Profile")}>
+          <TouchableOpacity onPress={() => navigation.navigate("Perfil")}>
             <Image
               source={{
                 uri:
@@ -179,7 +183,7 @@ const PantallaInicio = () => {
             </Text>
             <Ionicons
               name={showBalance ? "eye-off-outline" : "eye-outline"}
-              size={20}
+              size={24}
               color="rgba(255,255,255,0.8)"
               style={{ marginLeft: 10 }}
             />
@@ -188,56 +192,56 @@ const PantallaInicio = () => {
       </View>
 
       {/* Quick Actions Floating Card */}
-      <View style={styles.actionsCard}>
-        <View style={styles.qrSection}>
-          <TouchableOpacity
-            style={styles.qrButton}
-            onPress={() => navigation.navigate("QRScan")}
-          >
-            <Ionicons name="scan" size={30} color="white" />
-            <Text style={styles.qrText}>Escanear</Text>
-          </TouchableOpacity>
-        </View>
+      <View style={styles.actionsContainer}>
+        <TouchableOpacity
+          style={styles.yapearButton}
+          onPress={() => navigation.navigate("QR")}
+        >
+          <View style={styles.qrIconContainer}>
+            <Ionicons name="qr-code" size={32} color="white" />
+          </View>
+          <Text style={styles.yapearText}>YAPEAR</Text>
+        </TouchableOpacity>
 
-        <View style={styles.actionGrid}>
+        <View style={styles.secondaryActions}>
           <TouchableOpacity
-            style={styles.gridAction}
+            style={styles.actionItem}
             onPress={() => navigation.navigate("Transfer")}
           >
-            <View style={[styles.iconBox, { backgroundColor: "#E0F2F1" }]}>
+            <View style={[styles.actionIcon, { backgroundColor: "#E0F2F1" }]}>
               <Ionicons name="send" size={24} color={colors.secondary} />
             </View>
-            <Text style={styles.gridLabel}>Transferir</Text>
+            <Text style={styles.actionLabel}>Transferir</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.gridAction}
+            style={styles.actionItem}
             onPress={() => navigation.navigate("Deposit")}
           >
-            <View style={[styles.iconBox, { backgroundColor: "#E1F5FE" }]}>
-              <Ionicons name="wallet" size={24} color={colors.primary} />
+            <View style={[styles.actionIcon, { backgroundColor: "#FFF3E0" }]}>
+              <Ionicons name="wallet-outline" size={24} color="#F57C00" />
             </View>
-            <Text style={styles.gridLabel}>Ingresar</Text>
+            <Text style={styles.actionLabel}>Recargar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.gridAction}
-            onPress={() => navigation.navigate("TopUp")}
-          >
-            <View style={[styles.iconBox, { backgroundColor: "#F3E5F5" }]}>
-              <Ionicons name="phone-portrait" size={24} color="#AB47BC" />
-            </View>
-            <Text style={styles.gridLabel}>Celular</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={styles.gridAction}
+            style={styles.actionItem}
             onPress={() => navigation.navigate("Services")}
           >
-            <View style={[styles.iconBox, { backgroundColor: "#FFF3E0" }]}>
-              <Ionicons name="bulb" size={24} color="#F57C00" />
+            <View style={[styles.actionIcon, { backgroundColor: "#E1F5FE" }]}>
+              <Ionicons name="bulb-outline" size={24} color={colors.primary} />
             </View>
-            <Text style={styles.gridLabel}>Servicios</Text>
+            <Text style={styles.actionLabel}>Servicios</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.actionItem}
+            onPress={() => navigation.navigate("Promos")}
+          >
+            <View style={[styles.actionIcon, { backgroundColor: "#FCE4EC" }]}>
+              <Ionicons name="gift-outline" size={24} color={colors.accent} />
+            </View>
+            <Text style={styles.actionLabel}>Promos</Text>
           </TouchableOpacity>
         </View>
       </View>
@@ -384,18 +388,19 @@ const styles = StyleSheet.create({
   },
   header: {
     backgroundColor: colors.primary,
-    paddingTop: 50,
-    paddingBottom: 90, // More space for the floating card
+    paddingBottom: 40,
     paddingHorizontal: 20,
-    borderBottomLeftRadius: 0,
-    borderBottomRightRadius: 0,
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    marginBottom: 20,
   },
   headerTop: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
-    marginBottom: 20,
+    marginBottom: 10,
   },
+  // ... (keep avatar etc if needed, but we'll overwrite styles below)
   avatar: {
     width: 40,
     height: 40,
@@ -405,8 +410,8 @@ const styles = StyleSheet.create({
   },
   greeting: {
     color: "white",
-    fontSize: 18,
-    fontWeight: "bold",
+    fontSize: 16,
+    fontWeight: "600",
     flex: 1,
     marginLeft: 10,
   },
@@ -421,7 +426,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: colors.primary, // Blend with header
+    borderColor: colors.primary,
   },
   badgeText: {
     color: "white",
@@ -430,7 +435,8 @@ const styles = StyleSheet.create({
   },
   balanceContainer: {
     alignItems: "center",
-    marginTop: 10,
+    marginTop: 5,
+    marginBottom: 10,
   },
   balanceLabel: {
     color: "rgba(255,255,255,0.8)",
@@ -451,69 +457,66 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: "bold",
   },
-  actionsCard: {
+  actionsContainer: {
+    marginTop: -55,
+    alignItems: "center",
+    paddingHorizontal: 20,
+    marginBottom: 20,
+  },
+  yapearButton: {
+    backgroundColor: colors.accent, // A prominent pink/purple color
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    justifyContent: "center",
+    alignItems: "center",
+    elevation: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+    borderWidth: 4,
+    borderColor: "white",
+    marginBottom: 20,
+  },
+  qrIconContainer: {
+    marginBottom: -5,
+  },
+  yapearText: {
+    color: "white",
+    fontSize: 10,
+    fontWeight: "bold",
+    marginTop: 2,
+  },
+  secondaryActions: {
     flexDirection: "row",
+    justifyContent: "space-between",
+    width: "100%",
     backgroundColor: "white",
-    marginHorizontal: 20,
-    marginTop: -60, // Overlap header
     borderRadius: 15,
     padding: 15,
-    elevation: 4,
+    elevation: 3,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 4,
+    shadowRadius: 3,
   },
-  qrSection: {
-    justifyContent: "center",
+  actionItem: {
     alignItems: "center",
-    borderRightWidth: 1,
-    borderRightColor: "#eee",
-    paddingRight: 15,
-    marginRight: 15,
-  },
-  qrButton: {
-    backgroundColor: colors.secondary,
-    width: 60,
-    height: 60,
-    borderRadius: 30,
-    justifyContent: "center",
-    alignItems: "center",
-    elevation: 2,
-  },
-  qrText: {
-    color: colors.secondary,
-    fontSize: 10,
-    fontWeight: "bold",
-    marginTop: 4,
-    position: "absolute",
-    bottom: -18,
-    width: 80,
-    textAlign: "center",
-  },
-  actionGrid: {
     flex: 1,
-    marginHorizontal: 10, // More width
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
   },
-  gridAction: {
-    alignItems: "center",
-    width: 60,
-  },
-  iconBox: {
+  actionIcon: {
     width: 45,
     height: 45,
     borderRadius: 12,
     justifyContent: "center",
     alignItems: "center",
-    marginBottom: 5,
+    marginBottom: 8,
   },
-  gridLabel: {
-    fontSize: 10,
+  actionLabel: {
+    fontSize: 11,
     color: "#555",
-    textAlign: "center",
+    fontWeight: "500",
   },
   content: {
     flex: 1,
