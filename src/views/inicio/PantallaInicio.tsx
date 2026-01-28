@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { Text, Button, Card, Avatar, IconButton } from "react-native-paper";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useFocusEffect } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import api from "../../services/api";
 import { colors } from "../../utils/theme";
@@ -66,6 +66,30 @@ const PantallaInicio = () => {
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  useFocusEffect(
+    React.useCallback(() => {
+      checkPreferences();
+    }, []),
+  );
+
+  const checkPreferences = async () => {
+    try {
+      const hideVal = await AsyncStorage.getItem("setting_hideBalance");
+      // "Ocultar saldo" switch:
+      // If true -> Start Hidden (showBalance = false).
+      // If false -> Start Visible (showBalance = true).
+      // Default is false (Hidden) in state, but logic implies the switch controls "Startup state".
+      // If setting is NULL (never set), default to HIDDEN (don't change state).
+      if (hideVal === "false") {
+        setShowBalance(true);
+      } else if (hideVal === "true") {
+        setShowBalance(false);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
 
   const onRefresh = () => {
     hapticFeedback.light();

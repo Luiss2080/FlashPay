@@ -27,6 +27,8 @@ import PantallaRecuperarClave from "../views/autenticacion/PantallaRecuperarClav
 import PantallaBienvenida from "../views/autenticacion/PantallaBienvenida";
 import PantallaNotificaciones from "../views/inicio/PantallaNotificaciones";
 
+import PantallaPersonalizacion from "../views/perfil/PantallaPersonalizacion";
+
 import { colors } from "../utils/theme";
 
 const Stack = createNativeStackNavigator();
@@ -131,6 +133,11 @@ const AppNavigator = () => {
         />
 
         {/* Customization & New Features */}
+        <Stack.Screen
+          name="Customization"
+          component={PantallaPersonalizacion}
+          options={{ headerShown: false }}
+        />
         <Stack.Screen
           name="ProfileEdit"
           component={PantallaEditarPerfil}

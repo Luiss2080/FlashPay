@@ -79,7 +79,7 @@ const PantallaPerfil = () => {
           name="settings-outline"
           size={24}
           color="white"
-          onPress={() => {}}
+          onPress={() => navigation.navigate("Customization")}
         />
       </View>
 
