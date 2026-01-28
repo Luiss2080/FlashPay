@@ -18,6 +18,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { getAvatarColor, getInitials } from "../../utils/avatarUtils";
 import { Skeleton } from "../../components/common/Skeleton";
 import { hapticFeedback } from "../../utils/haptics";
+import { FadeInView } from "../../components/common/FadeInView";
 
 const PantallaInicio = () => {
   // ...
@@ -192,10 +193,14 @@ const PantallaInicio = () => {
       </View>
 
       {/* Quick Actions Floating Card */}
-      <View style={styles.actionsContainer}>
+      <FadeInView delay={100} style={styles.actionsContainer}>
         <TouchableOpacity
           style={styles.yapearButton}
-          onPress={() => navigation.navigate("QR")}
+          activeOpacity={0.8}
+          onPress={() => {
+            hapticFeedback.medium();
+            navigation.navigate("QR");
+          }}
         >
           <View style={styles.qrIconContainer}>
             <Ionicons name="qr-code" size={32} color="white" />
@@ -206,7 +211,11 @@ const PantallaInicio = () => {
         <View style={styles.secondaryActions}>
           <TouchableOpacity
             style={styles.actionItem}
-            onPress={() => navigation.navigate("Transfer")}
+            activeOpacity={0.7}
+            onPress={() => {
+              hapticFeedback.selection();
+              navigation.navigate("Transfer");
+            }}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#E0F2F1" }]}>
               <Ionicons name="send" size={24} color={colors.secondary} />
@@ -216,7 +225,11 @@ const PantallaInicio = () => {
 
           <TouchableOpacity
             style={styles.actionItem}
-            onPress={() => navigation.navigate("Deposit")}
+            activeOpacity={0.7}
+            onPress={() => {
+              hapticFeedback.selection();
+              navigation.navigate("Deposit");
+            }}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#FFF3E0" }]}>
               <Ionicons name="wallet-outline" size={24} color="#F57C00" />
@@ -226,7 +239,11 @@ const PantallaInicio = () => {
 
           <TouchableOpacity
             style={styles.actionItem}
-            onPress={() => navigation.navigate("Services")}
+            activeOpacity={0.7}
+            onPress={() => {
+              hapticFeedback.selection();
+              navigation.navigate("Services");
+            }}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#E1F5FE" }]}>
               <Ionicons name="bulb-outline" size={24} color={colors.primary} />
@@ -236,7 +253,11 @@ const PantallaInicio = () => {
 
           <TouchableOpacity
             style={styles.actionItem}
-            onPress={() => navigation.navigate("Promos")}
+            activeOpacity={0.7}
+            onPress={() => {
+              hapticFeedback.selection();
+              navigation.navigate("Promos");
+            }}
           >
             <View style={[styles.actionIcon, { backgroundColor: "#FCE4EC" }]}>
               <Ionicons name="gift-outline" size={24} color={colors.accent} />
@@ -244,7 +265,7 @@ const PantallaInicio = () => {
             <Text style={styles.actionLabel}>Promos</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </FadeInView>
 
       <ScrollView
         style={styles.content}
@@ -253,128 +274,136 @@ const PantallaInicio = () => {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Promos Section */}
-        {promos.length > 0 && (
-          <View style={styles.sectionContainer}>
-            <Text style={styles.sectionTitle}>Promociones para ti</Text>
-            <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-              {promos.map((promo, index) => (
-                <Card key={index} style={styles.promoCard}>
-                  <Card.Cover
-                    source={{
-                      uri: "https://via.placeholder.com/300x150/742384/ffffff?text=Promo",
-                    }}
-                    style={{ height: 100 }}
-                  />
-                  <Card.Content>
-                    <Text style={styles.promoTitle}>{promo.titulo}</Text>
-                    <Text style={styles.promoText} numberOfLines={2}>
-                      {promo.mensaje}
-                    </Text>
-                  </Card.Content>
-                </Card>
-              ))}
-            </ScrollView>
-          </View>
-        )}
-
-        {/* Favorites / Contacts Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>Transferir a...</Text>
-          {contacts.length === 0 ? (
-            <View style={styles.emptyContacts}>
-              <Text style={{ color: "#999" }}>No tienes favoritos aún</Text>
-              <Button
-                mode="text"
-                onPress={() => navigation.navigate("Transfer")}
-              >
-                Agregar
-              </Button>
+        <FadeInView delay={200}>
+          {/* Promos Section */}
+          {promos.length > 0 && (
+            <View style={styles.sectionContainer}>
+              <Text style={styles.sectionTitle}>Promociones para ti</Text>
+              <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+                {promos.map((promo, index) => (
+                  <Card key={index} style={styles.promoCard}>
+                    <Card.Cover
+                      source={{
+                        uri: "https://via.placeholder.com/300x150/742384/ffffff?text=Promo",
+                      }}
+                      style={{ height: 100 }}
+                    />
+                    <Card.Content>
+                      <Text style={styles.promoTitle}>{promo.titulo}</Text>
+                      <Text style={styles.promoText} numberOfLines={2}>
+                        {promo.mensaje}
+                      </Text>
+                    </Card.Content>
+                  </Card>
+                ))}
+              </ScrollView>
             </View>
-          ) : (
-            <ScrollView
-              horizontal
-              showsHorizontalScrollIndicator={false}
-              style={{ paddingBottom: 10 }}
-            >
-              <TouchableOpacity
-                style={styles.addContactBtn}
-                onPress={() => navigation.navigate("Transfer")}
-              >
-                <View style={styles.addContactIcon}>
-                  <Ionicons name="add" size={24} color="white" />
-                </View>
-                <Text style={styles.contactName}>Nuevo</Text>
-              </TouchableOpacity>
-              {contacts.map((contact, index) => (
-                <TouchableOpacity
-                  key={index}
-                  style={styles.contactItem}
-                  onPress={() =>
-                    navigation.navigate("Transfer", { phone: contact.telefono })
-                  }
-                >
-                  <Avatar.Text
-                    size={45}
-                    label={getInitials(contact.alias)}
-                    style={{ backgroundColor: getAvatarColor(contact.alias) }}
-                    color="white"
-                  />
-                  <Text style={styles.contactName} numberOfLines={1}>
-                    {contact.alias}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </ScrollView>
           )}
-        </View>
 
-        <Text style={styles.sectionTitle}>Últimos movimientos</Text>
-        {transactions.length === 0 ? (
-          <Text style={styles.emptyText}>No tienes movimientos recientes.</Text>
-        ) : (
-          transactions.map((tx, index) => (
-            <TouchableOpacity key={index} style={styles.transactionItem}>
-              <View
-                style={[
-                  styles.txIconCtx,
-                  {
-                    backgroundColor:
-                      tx.direccion === "ingreso" ? "#E8F5E9" : "#FFEBEE",
-                  },
-                ]}
-              >
-                <Ionicons
-                  name={tx.direccion === "ingreso" ? "arrow-down" : "arrow-up"}
-                  size={20}
-                  color={
-                    tx.direccion === "ingreso" ? colors.success : colors.error
-                  }
-                />
+          {/* Favorites / Contacts Section */}
+          <View style={styles.sectionContainer}>
+            <Text style={styles.sectionTitle}>Transferir a...</Text>
+            {contacts.length === 0 ? (
+              <View style={styles.emptyContacts}>
+                <Text style={{ color: "#999" }}>No tienes favoritos aún</Text>
+                <Button
+                  mode="text"
+                  onPress={() => navigation.navigate("Transfer")}
+                >
+                  Agregar
+                </Button>
               </View>
-              <View style={{ flex: 1, marginLeft: 15 }}>
-                <Text style={styles.txName}>{tx.otro_usuario_nombre}</Text>
-                <Text style={styles.txDate}>
-                  {tx.tipo} • {new Date(tx.fecha).toLocaleDateString()}
+            ) : (
+              <ScrollView
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                style={{ paddingBottom: 10 }}
+              >
+                <TouchableOpacity
+                  style={styles.addContactBtn}
+                  onPress={() => navigation.navigate("Transfer")}
+                >
+                  <View style={styles.addContactIcon}>
+                    <Ionicons name="add" size={24} color="white" />
+                  </View>
+                  <Text style={styles.contactName}>Nuevo</Text>
+                </TouchableOpacity>
+                {contacts.map((contact, index) => (
+                  <TouchableOpacity
+                    key={index}
+                    style={styles.contactItem}
+                    onPress={() =>
+                      navigation.navigate("Transfer", {
+                        phone: contact.telefono,
+                      })
+                    }
+                  >
+                    <Avatar.Text
+                      size={45}
+                      label={getInitials(contact.alias)}
+                      style={{ backgroundColor: getAvatarColor(contact.alias) }}
+                      color="white"
+                    />
+                    <Text style={styles.contactName} numberOfLines={1}>
+                      {contact.alias}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </ScrollView>
+            )}
+          </View>
+
+          <Text style={styles.sectionTitle}>Últimos movimientos</Text>
+          {transactions.length === 0 ? (
+            <Text style={styles.emptyText}>
+              No tienes movimientos recientes.
+            </Text>
+          ) : (
+            transactions.map((tx, index) => (
+              <TouchableOpacity key={index} style={styles.transactionItem}>
+                <View
+                  style={[
+                    styles.txIconCtx,
+                    {
+                      backgroundColor:
+                        tx.direccion === "ingreso" ? "#E8F5E9" : "#FFEBEE",
+                    },
+                  ]}
+                >
+                  <Ionicons
+                    name={
+                      tx.direccion === "ingreso" ? "arrow-down" : "arrow-up"
+                    }
+                    size={20}
+                    color={
+                      tx.direccion === "ingreso" ? colors.success : colors.error
+                    }
+                  />
+                </View>
+                <View style={{ flex: 1, marginLeft: 15 }}>
+                  <Text style={styles.txName}>{tx.otro_usuario_nombre}</Text>
+                  <Text style={styles.txDate}>
+                    {tx.tipo} • {new Date(tx.fecha).toLocaleDateString()}
+                  </Text>
+                </View>
+                <Text
+                  style={[
+                    styles.txAmount,
+                    {
+                      color:
+                        tx.direccion === "ingreso"
+                          ? colors.success
+                          : colors.error,
+                    },
+                  ]}
+                >
+                  {tx.direccion === "ingreso" ? "+" : "-"} S/{" "}
+                  {parseFloat(tx.monto).toFixed(2)}
                 </Text>
-              </View>
-              <Text
-                style={[
-                  styles.txAmount,
-                  {
-                    color:
-                      tx.direccion === "ingreso"
-                        ? colors.success
-                        : colors.error,
-                  },
-                ]}
-              >
-                {tx.direccion === "ingreso" ? "+" : "-"} S/{" "}
-                {parseFloat(tx.monto).toFixed(2)}
-              </Text>
-            </TouchableOpacity>
-          ))
-        )}
+              </TouchableOpacity>
+            ))
+          )}
+        </FadeInView>
         <View style={{ height: 100 }} />
       </ScrollView>
     </View>
@@ -492,14 +521,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     width: "100%",
-    backgroundColor: "white",
-    borderRadius: 15,
+    backgroundColor: "rgba(255, 255, 255, 0.95)", // Glass-ish
+    borderRadius: 20, // More rounded
     padding: 15,
-    elevation: 3,
+    elevation: 4,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 10,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.5)",
   },
   actionItem: {
     alignItems: "center",

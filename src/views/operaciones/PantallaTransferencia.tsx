@@ -23,6 +23,7 @@ import api from "../../services/api";
 import { colors } from "../../utils/theme";
 import { Ionicons } from "@expo/vector-icons";
 import SuccessReceipt from "../../components/SuccessReceipt";
+import { FadeInView } from "../../components/common/FadeInView";
 
 const PantallaTransferencia = () => {
   const navigation = useNavigation<any>();
@@ -146,54 +147,74 @@ const PantallaTransferencia = () => {
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView contentContainerStyle={styles.content}>
-          <Text style={styles.label}>Número de celular</Text>
-          <View style={styles.phoneInputContainer}>
-            <TextInput
-              mode="outlined"
-              placeholder="Ej. 987654321"
-              keyboardType="phone-pad"
-              value={phone}
-              onChangeText={setPhone}
-              style={[styles.input, { flex: 1 }]}
-            />
-            <IconButton
-              icon="account-box-outline"
-              size={30}
-              iconColor={colors.secondary}
+          <FadeInView>
+            <Text style={styles.label}>Número de celular</Text>
+            <View style={styles.phoneInputContainer}>
+              <TextInput
+                mode="outlined"
+                placeholder="Ej. 987654321"
+                keyboardType="phone-pad"
+                value={phone}
+                onChangeText={setPhone}
+                style={[styles.input, { flex: 1 }]}
+                right={
+                  <TextInput.Icon
+                    icon="account-box-outline"
+                    onPress={handleOpenContacts}
+                    color={colors.secondary}
+                  />
+                } // Also keep icon inside as shortcut
+              />
+            </View>
+            <TouchableOpacity
               onPress={handleOpenContacts}
-              style={{ marginBottom: 20 }}
-            />
-          </View>
-
-          <Text style={styles.label}>Monto a enviar</Text>
-          <View style={styles.amountContainer}>
-            <Text style={styles.currency}>S/</Text>
-            <TextInput
-              mode="flat"
-              placeholder="0.00"
-              keyboardType="numeric"
-              value={amount}
-              onChangeText={setAmount}
-              style={styles.amountInput}
-              contentStyle={{
-                fontSize: 30,
-                fontWeight: "bold",
-                color: colors.primary,
+              style={{
+                marginBottom: 20,
+                marginTop: -15,
+                alignSelf: "flex-end",
               }}
-              underlineColor="transparent"
-            />
-          </View>
+            >
+              <Text
+                style={{
+                  color: colors.secondary,
+                  fontWeight: "bold",
+                  textDecorationLine: "underline",
+                }}
+              >
+                Seleccionar de mis contactos
+              </Text>
+            </TouchableOpacity>
 
-          <Button
-            mode="contained"
-            onPress={handleTransfer}
-            loading={loading}
-            disabled={loading || !phone || !amount}
-            style={styles.button}
-            contentStyle={{ paddingVertical: 8 }}
-          >
-            Yapear
-          </Button>
+            <Text style={styles.label}>Monto a enviar</Text>
+            <View style={styles.amountContainer}>
+              <Text style={styles.currency}>S/</Text>
+              <TextInput
+                mode="flat"
+                placeholder="0.00"
+                keyboardType="numeric"
+                value={amount}
+                onChangeText={setAmount}
+                style={styles.amountInput}
+                contentStyle={{
+                  fontSize: 30,
+                  fontWeight: "bold",
+                  color: colors.primary,
+                }}
+                underlineColor="transparent"
+              />
+            </View>
+
+            <Button
+              mode="contained"
+              onPress={handleTransfer}
+              loading={loading}
+              disabled={loading || !phone || !amount}
+              style={styles.button}
+              contentStyle={{ paddingVertical: 8 }}
+            >
+              Yapear
+            </Button>
+          </FadeInView>
         </ScrollView>
       </KeyboardAvoidingView>
 
