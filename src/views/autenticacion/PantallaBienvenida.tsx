@@ -143,7 +143,7 @@ const PantallaBienvenida = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: colors.primary, // MORADO
   },
   slide: {
     width,
@@ -155,13 +155,13 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: "bold",
-    color: colors.primary,
+    color: "white", // White text
     marginBottom: 10,
     textAlign: "center",
   },
   description: {
     fontSize: 16,
-    color: "#666",
+    color: "rgba(255,255,255,0.8)", // Light white text
     textAlign: "center",
     paddingHorizontal: 20,
   },
@@ -179,12 +179,13 @@ const styles = StyleSheet.create({
   dot: {
     height: 10,
     borderRadius: 5,
-    backgroundColor: colors.primary,
+    backgroundColor: "white", // White dots
     marginHorizontal: 5,
   },
   button: {
-    backgroundColor: colors.secondary,
+    backgroundColor: colors.secondary, // Turquesa button
     borderRadius: 25,
+    elevation: 4,
   },
 });
 

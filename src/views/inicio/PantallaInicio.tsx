@@ -302,7 +302,7 @@ const PantallaInicio = () => {
                 onPress={() => navigation.navigate("Transfer")}
               >
                 <View style={styles.addContactIcon}>
-                  <Ionicons name="add" size={24} color={colors.primary} />
+                  <Ionicons name="add" size={24} color="white" />
                 </View>
                 <Text style={styles.contactName}>Nuevo</Text>
               </TouchableOpacity>
@@ -568,7 +568,7 @@ const styles = StyleSheet.create({
     height: 45,
     borderRadius: 22.5,
     borderWidth: 1,
-    borderColor: colors.primary,
+    borderColor: "white",
     borderStyle: "dashed",
     justifyContent: "center",
     alignItems: "center",
@@ -600,7 +600,7 @@ const styles = StyleSheet.create({
   txName: {
     fontWeight: "bold",
     fontSize: 15,
-    color: colors.text,
+    color: colors.textDark,
   },
   txDate: {
     fontSize: 12,

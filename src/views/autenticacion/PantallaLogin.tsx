@@ -7,6 +7,8 @@ import * as Yup from "yup";
 import api from "../../services/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { hapticFeedback } from "../../utils/haptics";
+import { Ionicons } from "@expo/vector-icons";
+import { colors } from "../../utils/theme";
 import * as LocalAuthentication from "expo-local-authentication";
 
 const PantallaLogin = () => {
@@ -102,78 +104,82 @@ const PantallaLogin = () => {
 
   return (
     <View style={styles.container}>
-      <Title style={styles.title}>FlashPay Login</Title>
+      <View style={styles.logoContainer}>
+        <Ionicons name="wallet" size={120} color="white" />
+        <Text style={styles.appName}>FlashPay</Text>
+        <Text style={styles.appTagline}>Tu billetera digital</Text>
+      </View>
 
-      <TextInput
-        label="Email"
-        value={formik.values.email}
-        onChangeText={formik.handleChange("email")}
-        onBlur={formik.handleBlur("email")}
-        mode="outlined"
-        style={styles.input}
-        keyboardType="email-address"
-        autoCapitalize="none"
-        error={formik.touched.email && Boolean(formik.errors.email)}
-      />
-      {formik.touched.email && formik.errors.email && (
-        <Text style={styles.errorText}>{formik.errors.email}</Text>
-      )}
+      <View style={styles.formContainer}>
+        <TextInput
+          label="Email"
+          value={formik.values.email}
+          onChangeText={formik.handleChange("email")}
+          onBlur={formik.handleBlur("email")}
+          mode="flat"
+          style={styles.input}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          textColor="#333"
+          underlineColor="transparent"
+          activeUnderlineColor={colors.secondary}
+          error={formik.touched.email && Boolean(formik.errors.email)}
+          left={<TextInput.Icon icon="email" color="#777" />}
+        />
+        {formik.touched.email && formik.errors.email && (
+          <Text style={styles.errorText}>{formik.errors.email}</Text>
+        )}
 
-      <TextInput
-        label="Contraseña"
-        value={formik.values.password}
-        onChangeText={formik.handleChange("password")}
-        onBlur={formik.handleBlur("password")}
-        mode="outlined"
-        style={styles.input}
-        secureTextEntry
-        error={formik.touched.password && Boolean(formik.errors.password)}
-      />
-      {formik.touched.password && formik.errors.password && (
-        <Text style={styles.errorText}>{formik.errors.password}</Text>
-      )}
+        <TextInput
+          label="Contraseña"
+          value={formik.values.password}
+          onChangeText={formik.handleChange("password")}
+          onBlur={formik.handleBlur("password")}
+          mode="flat"
+          style={styles.input}
+          secureTextEntry
+          textColor="#333"
+          underlineColor="transparent"
+          activeUnderlineColor={colors.secondary}
+          error={formik.touched.password && Boolean(formik.errors.password)}
+          left={<TextInput.Icon icon="lock" color="#777" />}
+        />
+        {formik.touched.password && formik.errors.password && (
+          <Text style={styles.errorText}>{formik.errors.password}</Text>
+        )}
 
-      <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
-        <Text
-          style={{
-            textAlign: "right",
-            color: "#666",
-            marginBottom: 20,
-            marginTop: 5,
-          }}
-        >
-          ¿Olvidaste tu contraseña?
-        </Text>
-      </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate("ForgotPassword")}>
+          <Text style={styles.forgotPassword}>¿Olvidaste tu contraseña?</Text>
+        </TouchableOpacity>
 
-      <Button
-        mode="contained"
-        onPress={() => formik.handleSubmit()}
-        loading={loading}
-        disabled={loading}
-        style={styles.button}
-      >
-        Ingresar
-      </Button>
-
-      {hasBiometrics && (
         <Button
-          icon="fingerprint"
-          mode="outlined"
-          onPress={handleBiometricLogin}
-          style={{ marginTop: 10, borderColor: "#6200ee" }}
+          mode="contained"
+          onPress={() => formik.handleSubmit()}
+          loading={loading}
+          disabled={loading}
+          style={styles.button}
+          labelStyle={styles.buttonLabel}
         >
-          Ingresar con Huella/FaceID
+          INGRESAR
         </Button>
-      )}
 
-      <Button
-        mode="text"
-        onPress={() => navigation.navigate("Register")}
-        style={styles.linkButton}
-      >
-        ¿No tienes cuenta? Regístrate
-      </Button>
+        {hasBiometrics && (
+          <TouchableOpacity
+            style={styles.biometricButton}
+            onPress={handleBiometricLogin}
+          >
+            <Ionicons name="finger-print" size={35} color="white" />
+            <Text style={styles.biometricText}>Ingresar con Huella/Rostro</Text>
+          </TouchableOpacity>
+        )}
+
+        <View style={styles.footerContainer}>
+          <Text style={styles.footerText}>¿No tienes cuenta?</Text>
+          <TouchableOpacity onPress={() => navigation.navigate("Register")}>
+            <Text style={styles.registerText}>Regístrate aquí</Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </View>
   );
 };
@@ -181,32 +187,105 @@ const PantallaLogin = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    padding: 20,
-    backgroundColor: "#fff",
+    backgroundColor: colors.primary, // MORADO INTENSO
   },
-  title: {
-    fontSize: 24,
+  logoContainer: {
+    flex: 0.45,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 40,
+  },
+  appName: {
+    fontSize: 40,
     fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-    color: "#6200ee",
+    color: "white",
+    marginTop: 10,
+    letterSpacing: 1,
+  },
+  appTagline: {
+    fontSize: 16,
+    color: "rgba(255,255,255,0.8)",
+    marginTop: 5,
+    letterSpacing: 0.5,
+  },
+  formContainer: {
+    flex: 0.55,
+    paddingHorizontal: 30,
+    justifyContent: "flex-start",
   },
   input: {
+    marginBottom: 15,
+    backgroundColor: "white",
+    borderRadius: 8,
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    height: 55,
+    justifyContent: "center",
+    elevation: 2,
+  },
+  errorText: {
+    color: "#ffcdd2", // Light red for visibility on purple (though inputs are white, checking context)
+    // Wait, errors are usually below inputs. If background is purple, red might be hard to see?
+    // Actually inputs are white background. Errors below inputs...
+    // Let's make error text white/yellow for contrast on purple background?
+    // User requested "all views purple".
+    fontSize: 12,
     marginBottom: 10,
+    marginLeft: 5,
+    fontWeight: "bold",
+  },
+  forgotPassword: {
+    textAlign: "right",
+    color: "rgba(255,255,255,0.9)",
+    marginBottom: 25,
+    marginTop: 5,
+    fontWeight: "600",
   },
   button: {
-    marginTop: 10,
-    paddingVertical: 5,
+    backgroundColor: colors.secondary, // Turquesa/Greenish contrasting with Purple
+    paddingVertical: 6,
+    borderRadius: 30, // Highly rounded buttons like Yape
+    elevation: 4,
+    width: "100%",
+  },
+  buttonLabel: {
+    fontWeight: "bold",
+    fontSize: 16,
+    letterSpacing: 1,
+  },
+  biometricButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    marginTop: 25,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.3)",
+    borderRadius: 20,
+    backgroundColor: "rgba(255,255,255,0.1)",
+  },
+  biometricText: {
+    color: "white",
+    marginLeft: 10,
+    fontWeight: "600",
   },
   linkButton: {
     marginTop: 15,
   },
-  errorText: {
-    color: "red",
-    fontSize: 12,
-    marginBottom: 10,
-    marginLeft: 5,
+  footerContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 40,
+    alignItems: "center",
+  },
+  footerText: {
+    color: "rgba(255,255,255,0.7)",
+    marginRight: 5,
+  },
+  registerText: {
+    color: colors.secondary,
+    fontWeight: "bold",
+    textDecorationLine: "underline",
   },
 });
 
