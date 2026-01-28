@@ -305,13 +305,64 @@ const styles = StyleSheet.create({
     marginBottom: 8,
     marginTop: 10,
   },
-  // ...
+  phoneInputContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  input: {
+    backgroundColor: "white",
+    marginBottom: 20,
+  },
+  amountContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "white",
+    borderRadius: 8,
+    paddingHorizontal: 15,
+    marginBottom: 30,
+    borderWidth: 1,
+    borderColor: "#ddd",
+  },
+  currency: {
+    fontSize: 24,
+    fontWeight: "bold",
+    color: colors.primary,
+    marginRight: 10,
+  },
+  amountInput: {
+    flex: 1,
+    backgroundColor: "transparent",
+  },
+  button: {
+    backgroundColor: colors.accent,
+    borderRadius: 25,
+    elevation: 4,
+    marginTop: 20,
+  },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  modalHeader: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: "#eee",
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
   modalTitle: {
     fontSize: 18,
     fontWeight: "bold",
     color: colors.textDark, // Dark on White Modal
   },
-  // ...
+  contactRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#f0f0f0",
+  },
   contactName: {
     fontWeight: "bold",
     fontSize: 16,
