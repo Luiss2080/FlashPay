@@ -28,6 +28,8 @@ import PantallaBienvenida from "../views/autenticacion/PantallaBienvenida";
 import PantallaNotificaciones from "../views/inicio/PantallaNotificaciones";
 
 import PantallaPersonalizacion from "../views/perfil/PantallaPersonalizacion";
+import PantallaMetas from "../views/metas/PantallaMetas";
+import PantallaCrearMeta from "../views/metas/PantallaCrearMeta";
 
 import { colors } from "../utils/theme";
 
@@ -181,6 +183,18 @@ const AppNavigator = () => {
         <Stack.Screen
           name="Onboarding"
           component={PantallaBienvenida}
+          options={{ headerShown: false }}
+        />
+
+        {/* Metas */}
+        <Stack.Screen
+          name="Metas"
+          component={PantallaMetas}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="CreateMeta"
+          component={PantallaCrearMeta}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

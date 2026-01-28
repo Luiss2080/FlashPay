@@ -141,6 +141,15 @@ const PantallaPerfil = () => {
             )}
             onPress={() => navigation.navigate("Favorites")}
           />
+          <Divider />
+          <List.Item
+            title="Mis Metas de Ahorro"
+            description="Ahorra para tus sueños"
+            left={(props) => (
+              <List.Icon {...props} icon="piggy-bank" color={colors.primary} />
+            )}
+            onPress={() => navigation.navigate("Metas")}
+          />
         </View>
 
         <View style={styles.section}>

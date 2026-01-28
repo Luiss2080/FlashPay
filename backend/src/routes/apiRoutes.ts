@@ -53,6 +53,18 @@ router.get("/user/limits", getLimits);
 router.post("/user/limits", setLimits);
 
 // Promos
+// Promos
 router.get("/promos", getPromos);
+
+// Metas
+import {
+  getMetas,
+  createMeta,
+  addFundsMeta,
+} from "../controllers/metasController";
+
+router.get("/metas", getMetas);
+router.post("/metas", createMeta);
+router.post("/metas/add", addFundsMeta);
 
 export default router;

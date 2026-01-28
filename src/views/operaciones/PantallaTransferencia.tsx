@@ -154,8 +154,19 @@ const PantallaTransferencia = () => {
                 mode="outlined"
                 placeholder="Ej. 987654321"
                 keyboardType="phone-pad"
+                maxLength={11} // 9 digits + 2 spaces
                 value={phone}
-                onChangeText={setPhone}
+                onChangeText={(text) => {
+                  const cleaned = text.replace(/[^0-9]/g, "");
+                  let formatted = cleaned;
+                  if (cleaned.length > 3) {
+                    formatted = cleaned.slice(0, 3) + " " + cleaned.slice(3);
+                  }
+                  if (cleaned.length > 6) {
+                    formatted = formatted.slice(0, 7) + " " + cleaned.slice(6);
+                  }
+                  setPhone(formatted.slice(0, 11));
+                }}
                 style={[styles.input, { flex: 1 }]}
                 right={
                   <TextInput.Icon
