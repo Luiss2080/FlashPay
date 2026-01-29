@@ -32,9 +32,15 @@ const PantallaRecargaCelular = () => {
         });
 
         if (response.data.status === "success") {
-          Alert.alert("¡Recarga Exitosa!", response.data.message, [
-            { text: "OK", onPress: () => navigation.goBack() },
-          ]);
+          navigation.navigate("Comprobante", {
+            amount: parseFloat(amount),
+            date: new Date().toLocaleString(),
+            transactionId: "REC-" + Math.floor(Math.random() * 1000000),
+            serviceName: operator,
+            recipient: phone,
+            type: "RECARGA",
+            status: "EXITOSO",
+          });
         } else {
           Alert.alert("Error", response.data.message);
         }

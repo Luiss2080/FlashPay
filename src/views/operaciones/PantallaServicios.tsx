@@ -88,17 +88,19 @@ const PantallaServicios = () => {
         });
 
         if (response.data.status === "success") {
-          Alert.alert("¡Pago Exitoso!", response.data.message, [
-            {
-              text: "OK",
-              onPress: () => {
-                setSelectedService(null);
-                setReference("");
-                setAmount("");
-                navigation.navigate("Dashboard");
-              },
-            },
-          ]);
+          setSelectedService(null);
+          setReference("");
+          setAmount("");
+
+          navigation.navigate("Comprobante", {
+            amount: parseFloat(amount),
+            date: new Date().toLocaleString(),
+            transactionId: "SERV-" + Math.floor(Math.random() * 1000000),
+            serviceName: selectedService.nombre,
+            recipient: selectedService.nombre,
+            type: "PAGO SERVICIO",
+            status: "EXITOSO",
+          });
         } else {
           Alert.alert("Error", response.data.message);
         }
