@@ -9,6 +9,7 @@ import PantallaLogin from "../views/autenticacion/PantallaLogin";
 import PantallaInicio from "../views/inicio/PantallaInicio";
 import PantallaPerfil from "../views/perfil/PantallaPerfil";
 import PantallaEscanearQR from "../views/operaciones/PantallaEscanearQR";
+import PantallaComprobante from "../views/operaciones/PantallaComprobante";
 import PantallaTransferencia from "../views/operaciones/PantallaTransferencia";
 import PantallaServicios from "../views/operaciones/PantallaServicios";
 import PantallaRecargaCelular from "../views/operaciones/PantallaRecargaCelular";
@@ -119,8 +120,13 @@ const AppNavigator = () => {
           options={{ headerShown: false }}
         />
         <Stack.Screen
-          name="QRScan"
+          name="EscanearQR"
           component={PantallaEscanearQR}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Comprobante"
+          component={PantallaComprobante}
           options={{ headerShown: false }}
         />
         <Stack.Screen
