@@ -118,7 +118,7 @@ docs/                      # documentación previa (01..06, especificaciones)
 <details>
 <summary>Variables de entorno (backend/.env)</summary>
 
-`PORT`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (por defecto `localhost`, `root`, vacío, `FlashPay`). El archivo `backend/.env` está versionado en el repo (con contraseña de base vacía); conviene sacarlo del control de versiones.
+`PORT`, `DB_HOST`, `DB_USER`, `DB_PASSWORD`, `DB_NAME` (por defecto `localhost`, `root`, vacío, `FlashPay`). `backend/.env` ya no se versiona: copia `backend/.env.example` a `backend/.env` y completa los valores.
 
 </details>
 
