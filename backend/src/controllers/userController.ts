@@ -1,11 +1,14 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { RowDataPacket } from "mysql2";
+import { uid } from "../middleware/auth";
+import { hashPassword, verifyPassword } from "../utils/auth";
 
 export const updateProfile = async (req: Request, res: Response) => {
-  const { user_id, nombre, email, telefono } = req.body;
+  const user_id = uid(req);
+  const { nombre, email, telefono } = req.body;
 
-  if (!user_id || !nombre || !email) {
+  if (!nombre || !email) {
     res
       .status(400)
       .json({ status: "error", message: "Faltan datos requeridos" });
@@ -37,9 +40,10 @@ export const updateProfile = async (req: Request, res: Response) => {
 };
 
 export const updatePassword = async (req: Request, res: Response) => {
-  const { user_id, current_password, new_password } = req.body;
+  const user_id = uid(req);
+  const { current_password, new_password } = req.body;
 
-  if (!user_id || !current_password || !new_password) {
+  if (!current_password || !new_password) {
     res
       .status(400)
       .json({ status: "error", message: "Faltan datos requeridos" });
@@ -60,8 +64,11 @@ export const updatePassword = async (req: Request, res: Response) => {
     }
 
     const user = rows[0];
-    // Simple check matching authController (no hash for now per existing pattern)
-    if (user.password !== current_password) {
+    const check = await verifyPassword(
+      String(current_password),
+      String(user.password),
+    );
+    if (!check.ok) {
       res
         .status(401)
         .json({ status: "error", message: "Contraseña actual incorrecta" });
@@ -69,7 +76,7 @@ export const updatePassword = async (req: Request, res: Response) => {
     }
 
     await pool.query("UPDATE Usuarios SET password = ? WHERE id_usuario = ?", [
-      new_password,
+      await hashPassword(String(new_password)),
       user_id,
     ]);
 

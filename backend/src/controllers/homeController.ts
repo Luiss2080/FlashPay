@@ -1,16 +1,10 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { RowDataPacket } from "mysql2";
+import { uid } from "../middleware/auth";
 
 export const getHomeData = async (req: Request, res: Response) => {
-  const userId = req.query.id_usuario;
-
-  if (!userId) {
-    res
-      .status(400)
-      .json({ status: "error", message: "ID de usuario requerido" });
-    return;
-  }
+  const userId = uid(req);
 
   try {
     // 1. User Info & QR

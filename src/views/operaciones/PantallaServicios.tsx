@@ -81,10 +81,9 @@ const PantallaServicios = () => {
       if (storedUser) {
         const user = JSON.parse(storedUser);
         const response = await api.post("/api/services", {
-          user_id: user.id_usuario,
-          service_id: selectedService.id_servicio,
-          amount: parseFloat(amount),
-          reference: reference,
+          id_servicio: selectedService.id_servicio,
+          monto: parseFloat(amount),
+          codigo_cliente: reference,
         });
 
         if (response.data.status === "success") {

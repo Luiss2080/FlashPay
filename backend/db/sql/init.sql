@@ -32,4 +32,4 @@ CREATE TABLE IF NOT EXISTS QR_Pagos (
 
 -- Insertar usuario de prueba (Password: 123456)
 INSERT INTO Usuarios (nombre, telefono, email, password, saldo) VALUES 
-('Usuario Prueba', '987654321', 'test@flashpay.com', '$2y$10$YourHashedPasswordHere', 500.00);
+('Usuario Prueba', '987654321', 'test@flashpay.com', '$2b$10$U33n8IFUQ4E3h./Id9N8j.ukBAoDDdCeJtQk7tOOtHpw6rGW1nYx2', 500.00);

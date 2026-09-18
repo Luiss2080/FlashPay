@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
 import { RowDataPacket } from "mysql2";
+import { uid } from "../middleware/auth";
 
 export const getServices = async (req: Request, res: Response) => {
   try {
@@ -12,11 +13,7 @@ export const getServices = async (req: Request, res: Response) => {
 };
 
 export const getContacts = async (req: Request, res: Response) => {
-  const userId = req.query.user_id;
-  if (!userId) {
-    res.status(400).json({ status: "error", message: "Falta user_id" });
-    return;
-  }
+  const userId = uid(req);
   try {
     const [rows] = await pool.query(
       `
@@ -33,8 +30,9 @@ export const getContacts = async (req: Request, res: Response) => {
 };
 
 export const addContact = async (req: Request, res: Response) => {
-  const { user_id, contact_phone, contact_email, alias } = req.body;
-  if (!user_id || (!contact_phone && !contact_email)) {
+  const user_id = uid(req);
+  const { contact_phone, contact_email, alias } = req.body;
+  if ( (!contact_phone && !contact_email)) {
     res.status(400).json({ status: "error", message: "Datos incompletos" });
     return;
   }
@@ -88,11 +86,7 @@ export const addContact = async (req: Request, res: Response) => {
 };
 
 export const getNotifications = async (req: Request, res: Response) => {
-  const userId = req.query.user_id;
-  if (!userId) {
-    res.status(400).json({ status: "error" });
-    return;
-  }
+  const userId = uid(req);
   try {
     const [rows] = await pool.query(
       "SELECT * FROM Notificaciones WHERE id_usuario = ? ORDER BY fecha DESC LIMIT 20",

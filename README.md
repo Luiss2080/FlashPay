@@ -124,23 +124,21 @@ docs/                      # documentación previa (01..06, especificaciones)
 
 ## 🧪 Pruebas
 
-No hay pruebas automatizadas (ni de la app ni del backend). La única verificación hecha para este README fue la compilación de tipos del backend (`tsc --noEmit`, sin errores).
+El backend tiene tests con Vitest + Supertest (`cd backend && npm test`): hash de contraseñas, JWT, middleware de autenticación y login con hash (base de datos simulada). La app móvil no tiene tests.
 
 ## 🔒 Seguridad
 
 Estado real, **no apto para producción**:
 
-- El login compara la contraseña en texto plano y acepta además una contraseña de demostración fija para cualquier usuario (`authController.ts`).
-- El "token" de sesión se genera con `Math.random()`; ninguna ruta de `/api` lo valida. Las operaciones toman `id_usuario`/`id_emisor` del cuerpo de la petición, así que cualquiera puede operar sobre la cuenta de otro.
-- `cors()` abierto, sin límite de intentos y sin validación de montos (por ejemplo, montos negativos).
+- Login con bcrypt (upgrade-on-login para cuentas antiguas en texto plano) y JWT HS256 firmado con `JWT_SECRET` (obligatorio en producción). Todas las rutas `/api` exigen `Authorization: Bearer <token>` y el usuario sale del token, no del cuerpo. Los montos deben ser positivos.
+- Sigue pendiente: `cors()` abierto, sin límite de intentos de login, sin revocación de tokens.
 - Los usuarios sembrados traen hashes de relleno, no contraseñas reales.
 - Positivo: transferencias, recargas y pagos usan transacciones SQL y consultas parametrizadas.
 
 ## 🚧 Lo que todavía no existe
 
 - Integración bancaria, pasarela de pagos, QR interoperable o cualquier movimiento de dinero real.
-- Autenticación real (JWT/sesiones, bcrypt) y autorización por usuario.
-- Sin tests, sin CI, sin despliegue, sin capturas.
+- Sin tests de la app, sin CI, sin despliegue, sin capturas.
 
 ## 📄 Licencia
 
