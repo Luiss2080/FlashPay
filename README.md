@@ -141,7 +141,6 @@ Estado real, **no apto para producción**:
 - Integración bancaria, pasarela de pagos, QR interoperable o cualquier movimiento de dinero real.
 - Autenticación real (JWT/sesiones, bcrypt) y autorización por usuario.
 - Los scripts de `backend/db/migrations/` no definen la columna `descripcion` ni el valor `'servicio'` del ENUM de `Transacciones`, que los controladores sí usan: con esa base, transferencias, recargas y pagos probablemente fallen (revisado leyendo el SQL, no ejecutado).
-- La documentación previa menciona Expo SDK 52 y `react-native-reanimated`; el `package.json` real usa Expo SDK 54 y no incluye Reanimated.
 - Sin tests, sin CI, sin despliegue, sin capturas.
 
 ## 📄 Licencia

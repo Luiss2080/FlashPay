@@ -8,12 +8,11 @@ FlashPay es una billetera digital moderna ("Yape-like") diseñada para facilitar
 
 ### Frontend (Móvil)
 
-- **Framework:** React Native (v0.76+) con Expo (SDK 52).
+- **Framework:** React Native (v0.81) con Expo (SDK 54).
 - **Lenguaje:** TypeScript.
 - **UI/UX:**
   - `react-native-paper`: Componentes base (Botones, Tarjetas, Inputs).
   - `react-native-safe-area-context`: Manejo de "Notch" y áreas seguras.
-  - `react-native-reanimated`: Animaciones complejas.
   - `@expo/vector-icons`: Iconografía (Ionicons).
   - **Estilos:** StyleSheet nativo con sistema de temas centralizado (`src/utils/theme.ts`).
 - **Navegación:** React Navigation v7 (Stack + BottomTabs).

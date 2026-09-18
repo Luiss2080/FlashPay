@@ -6,7 +6,7 @@ FlashPay es una billetera digital móvil híbrida inspirada en Yape, diseñada p
 
 ## Stack Tecnológico
 
-- **Frontend:** React Native (Expo SDK 52) + TypeScript.
+- **Frontend:** React Native (Expo SDK 54) + TypeScript.
 - **Backend:** Node.js + Express.
 - **Base de Datos:** MySQL.
 - **ORM/Driver:** mysql2.
