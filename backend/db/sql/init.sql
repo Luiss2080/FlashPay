@@ -16,7 +16,8 @@ CREATE TABLE IF NOT EXISTS Transacciones (
     id_emisor INT NOT NULL,
     id_receptor INT NOT NULL,
     monto DECIMAL(10, 2) NOT NULL,
-    tipo ENUM('transferencia', 'pago', 'recarga') NOT NULL,
+    tipo ENUM('transferencia', 'pago', 'recarga', 'servicio', 'ingreso') NOT NULL,
+    descripcion VARCHAR(255) DEFAULT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (id_emisor) REFERENCES Usuarios(id_usuario),
     FOREIGN KEY (id_receptor) REFERENCES Usuarios(id_usuario)
