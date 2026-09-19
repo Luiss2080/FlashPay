@@ -2,15 +2,13 @@
 
 ## Usuario por Defecto
 
-Usuario precargado con saldo y datos para pruebas inmediatas.
+Usuarios sembrados por `backend/db/seeders/001_users.sql` (contraseña de demostración solo para desarrollo, guardada con bcrypt):
 
-- **Usuario:** `test@flashpay.com`
+- **Usuario:** `test@flashpay.com` (o `admin@flashpay.com`)
 - **Contraseña:** `123456`
 
-## Acceso Universal (Modo Dev)
+## Autenticación
 
-Para facilitar el desarrollo, el backend acepta una contraseña maestra para **cualquier** usuario registrado.
+El backend **ya no** acepta una contraseña maestra para cualquier usuario. El login (`POST /auth/login`) verifica la contraseña con bcrypt y devuelve un JWT (HS256, 12 h) que la app envía como `Authorization: Bearer <token>` en todas las rutas `/api`. Las cuentas antiguas con contraseña en texto plano se aceptan una sola vez y se re-guardan con hash al iniciar sesión.
 
-- **Contraseña Maestra:** `123456`
-
-Puedes registrar un usuario nuevo desde la App y entrar inmediatamente usando esta contraseña si no quieres configurar el hash bcrypt completo en local.
+Define `JWT_SECRET` en `backend/.env` (obligatorio si `NODE_ENV=production`).

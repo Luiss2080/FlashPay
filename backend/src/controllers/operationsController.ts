@@ -1,9 +1,17 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
-import { RowDataPacket, ResultSetHeader } from "mysql2";
+import { RowDataPacket } from "mysql2";
+import { uid } from "../middleware/auth";
+import { parseAmount } from "../utils/amount";
 
 export const transfer = async (req: Request, res: Response) => {
-  const { id_emisor, telefono, monto } = req.body;
+  const id_emisor = uid(req);
+  const { telefono } = req.body;
+  const monto = parseAmount(req.body.monto);
+  if (monto === null) {
+    res.status(400).json({ status: "error", message: "Monto invalido" });
+    return;
+  }
 
   const connection = await pool.getConnection();
   try {
@@ -64,7 +72,13 @@ export const transfer = async (req: Request, res: Response) => {
 };
 
 export const topup = async (req: Request, res: Response) => {
-  const { id_usuario, telefono, operador, monto } = req.body;
+  const id_usuario = uid(req);
+  const { telefono, operador } = req.body;
+  const monto = parseAmount(req.body.monto);
+  if (monto === null) {
+    res.status(400).json({ status: "error", message: "Monto invalido" });
+    return;
+  }
 
   const connection = await pool.getConnection();
   try {
@@ -76,7 +90,7 @@ export const topup = async (req: Request, res: Response) => {
       [id_usuario],
     );
     if (rows.length === 0) throw new Error("Usuario no encontrado");
-    if (rows[0].saldo < monto) throw new Error("Saldo insuficiente");
+    if (parseFloat(rows[0].saldo) < monto) throw new Error("Saldo insuficiente");
 
     // Deduct
     await connection.query(
@@ -101,7 +115,13 @@ export const topup = async (req: Request, res: Response) => {
 };
 
 export const payService = async (req: Request, res: Response) => {
-  const { id_usuario, id_servicio, codigo_cliente, monto } = req.body;
+  const id_usuario = uid(req);
+  const { id_servicio, codigo_cliente } = req.body;
+  const monto = parseAmount(req.body.monto);
+  if (monto === null) {
+    res.status(400).json({ status: "error", message: "Monto invalido" });
+    return;
+  }
 
   const connection = await pool.getConnection();
   try {
@@ -113,7 +133,7 @@ export const payService = async (req: Request, res: Response) => {
       [id_usuario],
     );
     if (rows.length === 0) throw new Error("Usuario no encontrado");
-    if (rows[0].saldo < monto) throw new Error("Saldo insuficiente");
+    if (parseFloat(rows[0].saldo) < monto) throw new Error("Saldo insuficiente");
 
     // Deduct
     await connection.query(
@@ -143,7 +163,13 @@ export const payService = async (req: Request, res: Response) => {
 };
 
 export const deposit = async (req: Request, res: Response) => {
-  const { id_usuario, monto, metodo } = req.body;
+  const id_usuario = uid(req);
+  const { metodo } = req.body;
+  const monto = parseAmount(req.body.monto);
+  if (monto === null) {
+    res.status(400).json({ status: "error", message: "Monto invalido" });
+    return;
+  }
 
   const connection = await pool.getConnection();
   try {

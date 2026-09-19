@@ -1,13 +1,10 @@
 import { Request, Response } from "express";
 import { pool } from "../config/db";
-import { RowDataPacket } from "mysql2";
+import { uid } from "../middleware/auth";
+import { parseAmount } from "../utils/amount";
 
 export const getMetas = async (req: Request, res: Response) => {
-  const userId = req.query.user_id;
-  if (!userId) {
-    res.status(400).json({ status: "error", message: "Falta user_id" });
-    return;
-  }
+  const userId = uid(req);
   try {
     const [rows] = await pool.query(
       "SELECT * FROM Metas WHERE id_usuario = ?",
@@ -20,8 +17,10 @@ export const getMetas = async (req: Request, res: Response) => {
 };
 
 export const createMeta = async (req: Request, res: Response) => {
-  const { user_id, title, target_amount, icon } = req.body;
-  if (!user_id || !title || !target_amount) {
+  const user_id = uid(req);
+  const { title, icon } = req.body;
+  const target_amount = parseAmount(req.body.target_amount);
+  if (!title || target_amount === null) {
     res.status(400).json({ status: "error", message: "Datos incompletos" });
     return;
   }
@@ -38,16 +37,17 @@ export const createMeta = async (req: Request, res: Response) => {
 };
 
 export const addFundsMeta = async (req: Request, res: Response) => {
-  const { meta_id, amount } = req.body;
-  if (!meta_id || !amount) {
+  const { meta_id } = req.body;
+  const amount = parseAmount(req.body.amount);
+  if (!meta_id || amount === null) {
     res.status(400).json({ status: "error", message: "Datos incompletos" });
     return;
   }
 
   try {
     await pool.query(
-      "UPDATE Metas SET monto_actual = monto_actual + ? WHERE id_meta = ?",
-      [amount, meta_id],
+      "UPDATE Metas SET monto_actual = monto_actual + ? WHERE id_meta = ? AND id_usuario = ?",
+      [amount, meta_id, uid(req)],
     );
     // TODO: Deduct from main balance? For now just tracking visually.
     res.json({ status: "success", message: "Fondos agregados" });
